@@ -9,7 +9,24 @@
     {% tailwind_css %}
 </head>
 
-<body>
+<body class="bg-[#171717]">
+    <header class="bg-[#091F2C] h-14">
+        <div class="max-w-[1120px] h-full mx-auto px-5 flex justify-between items-center">
+            <div class="whitespace-nowrap">
+                <a href="" class="text-[#75B6E7]">トップ</a>
+            </div>
+            <div class="basis-[500px] mx-3">
+                <form action="" method="get">
+                    <input type="text" placeholder="記事を検索" name="keyword"
+                        class="w-full bg-transparent border-[#D2D2D2] focus:border-[#D2D2D2] rounded-md text-[#E6E6E6]">
+                </form>
+            </div>
+            <div class="whitespace-nowrap">
+                <a href="" class="text-[#75B6E7] mr-2">ログイン</a>
+                <a href="" class="text-[#75B6E7]">新規登録</a>
+            </div>
+        </div>
+    </header>
     <div id="main">
         {% block main %}{% endblock main %}
     </div>
