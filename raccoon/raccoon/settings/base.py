@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "articleapp.apps.ArticleappConfig",
+    "tailwind",
+    "theme",
 ]
 
 MIDDLEWARE = [
@@ -120,3 +122,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # 本アプリケーションで利用するUserモデルを変更
 AUTH_USER_MODEL = "articleapp.User"
+
+# django-tailwind の設定
+TAILWIND_APP_NAME = "theme"
+
+INTERNAL_IPS = ["127.0.0.1"]
