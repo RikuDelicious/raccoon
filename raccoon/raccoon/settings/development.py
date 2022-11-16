@@ -19,9 +19,10 @@ SECRET_KEY = "django-insecure-m=$(!zp$+6&o#4@bqbi@gac@p2f=rx$*9r#t@wx_3!dmk6ie4+
 # django-tailwind の設定
 TAILWIND_APP_NAME = "theme"
 
-INSTALLED_APPS += [
-    "tailwind",
-    "theme",
+INSTALLED_APPS += ["tailwind", "theme", "django_browser_reload"]
+
+MIDDLEWARE += [
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 INTERNAL_IPS = [
