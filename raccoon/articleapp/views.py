@@ -17,3 +17,6 @@ def index(request):
     posts = Post.objects.filter(is_published=True).order_by("-date_publish")[0:5]
 
     return render(request, "articleapp/index.html", {"posts": posts, "tags": tags})
+
+def search(request):
+    return render(request, "articleapp/search.html")
