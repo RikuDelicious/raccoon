@@ -47,3 +47,13 @@ class UserAdmin(BaseUserAdmin):
         if obj is not None and (obj.is_staff or obj.is_superuser):
             return tuple()
         return ("email",)
+
+
+@admin.register(models.Post)
+class PostAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(models.Tag)
+class TagAdmin(admin.ModelAdmin):
+    pass
