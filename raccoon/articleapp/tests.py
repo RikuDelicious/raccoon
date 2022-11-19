@@ -1,4 +1,5 @@
 import datetime
+import random
 
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -63,6 +64,10 @@ class IndexViewTests(TestCase):
         tags = [Tag(name=f"tag_{i + 1}") for i in range(self.number_of_tags + 10)]
         Tag.objects.bulk_create(tags)
 
+        # 全てのタグを何らかの記事に紐づけておく。
+        for tag in tags:
+            random.choice(posts).tags.add(tag)
+
         c = Client()
         response = c.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
@@ -87,6 +92,10 @@ class IndexViewTests(TestCase):
         tags = [Tag(name=f"tag_{i + 1}") for i in range(20)]
         Tag.objects.bulk_create(tags)
 
+        # 全てのタグを何らかの記事に紐づけておく。
+        for tag in tags:
+            random.choice(posts).tags.add(tag)
+
         c = Client()
         response = c.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
@@ -108,6 +117,10 @@ class IndexViewTests(TestCase):
         Post.objects.bulk_create(posts)
         tags = [Tag(name=f"tag_{i + 1}") for i in range(self.number_of_tags - 1)]
         Tag.objects.bulk_create(tags)
+
+        # 全てのタグを何らかの記事に紐づけておく。
+        for tag in tags:
+            random.choice(posts).tags.add(tag)
 
         c = Client()
         response = c.get(reverse("index"))
@@ -139,8 +152,42 @@ class IndexViewTests(TestCase):
         tags = [Tag(name=f"tag_{i + 1}") for i in range(self.number_of_tags + 10)]
         Tag.objects.bulk_create(tags)
 
+        # 全てのタグを何らかの記事に紐づけておく。
+        for tag in tags:
+            random.choice(posts).tags.add(tag)
+
         c = Client()
         response = c.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(list(response.context["posts"]), [posts[0]])
         self.assertEqual(len(response.context["tags"]), self.number_of_tags)
+
+    def test_投稿が無いまたは下書き投稿のみタグは表示されない(self):
+        user = User.objects.create_user(username="testuser", password="testuser")
+        tags = [Tag(name=f"tag_{i + 1}") for i in range(3)]
+        Tag.objects.bulk_create(tags)
+        posts = [
+            Post(
+                title="post_1",
+                body="post_1_body",
+                user=user,
+                is_published=True,
+                date_publish=(self.today_datetime.date()),
+            ),
+            Post(
+                title="post_2",
+                body="post_2_body",
+                user=user,
+                is_published=False,
+                date_publish=(self.today_datetime.date()),
+            ),
+        ]
+        Post.objects.bulk_create(posts)
+        posts[0].tags.add(tags[0])
+        posts[1].tags.add(tags[1])
+
+        c = Client()
+        response = c.get(reverse("index"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(list(response.context["posts"]), [posts[0]])
+        self.assertEqual(list(response.context["tags"]), [tags[0]])
