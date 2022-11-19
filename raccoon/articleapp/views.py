@@ -6,7 +6,12 @@ from .models import Post, Tag
 def index(request):
     # tagをランダムに10個取得
     # order_by("?")でランダムに並べ替え
-    tags = Tag.objects.order_by("?")[0:10]
+    tags = (
+        Tag.objects
+        .filter(post__isnull=False)  # 少なくとも1つ以上の投稿があるタグのみにする
+        .filter(post__is_published=True) # 少なくとも1つ以上の投稿が公開されているタグのみにする
+        .order_by("?")[0:10]
+    )
 
     # Postの新着5件を取得
     posts = Post.objects.filter(is_published=True).order_by("-date_publish")[0:5]
