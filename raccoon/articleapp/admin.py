@@ -8,6 +8,8 @@ from . import models
 # Register your models here.
 @admin.register(models.User)
 class UserAdmin(BaseUserAdmin):
+    list_display = ("username", "display_name", "email", "is_staff")
+
     def get_fieldsets(self, request, obj=None):
         # ユーザー追加フォームにはデフォルトのフィールドを表示する
         if obj is None:
