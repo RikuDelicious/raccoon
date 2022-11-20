@@ -22,9 +22,4 @@ def search(request):
     querydict = request.GET
     context = {}
 
-    if "title" in querydict:
-        context["title"] = querydict["title"]
-    else:
-        context["title"] = "記事を検索"
-
     return render(request, "articleapp/search.html", context)

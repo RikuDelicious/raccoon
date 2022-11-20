@@ -2,7 +2,13 @@
 {% load static %}
 
 {% block main %}
-<h1 class="text-4xl font-bold text-[#E6E6E6] mb-10">{{ title }}</h1>
+<h1 class="text-4xl font-bold text-[#E6E6E6] mb-10">
+    {% if request.GET.title %}
+        {{ request.GET.title }}
+    {% else %}
+        記事を検索
+    {% endif %}
+</h1>
 <form action="" method="get">
     <div class="mb-2">
         <input type="text" placeholder="記事を検索" name="keyword"
