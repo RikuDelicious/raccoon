@@ -22,7 +22,12 @@
     <div class=" grid grid-cols-3 gap-x-8">
         <!-- フィルタヘッダー: 期間 -->
         <div>
-            <p class="text-[#E6E6E6] font-bold">投稿日: <span>2022/01/01 ~ 2022/01/10</span></p>
+            <p class="text-[#E6E6E6] font-bold">
+                投稿日:
+                <span>{{ request.GET.period_start_date}}</span>
+                <span> ~ </span>
+                <span>{{ request.GET.period_end_date }}</span>
+            </p>
         </div>
 
         <!-- フィルタヘッダー: タグ -->
