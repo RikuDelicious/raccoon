@@ -4,12 +4,14 @@
 {% block main %}
 <h1 class="text-4xl font-bold text-[#E6E6E6] mb-10">
     {% if request.GET.title %}
-        {{ request.GET.title }}
+    {{ request.GET.title }}
     {% else %}
-        記事を検索
+    記事を検索
     {% endif %}
 </h1>
-<form action="" method="get">
+
+<!-- フィルタ用フォーム -->
+<form id="filter_form" action="" method="get">
     <div class="mb-2">
         <input type="text" placeholder="記事を検索" name="keyword"
             class="w-full max-w-[560px] bg-transparent border-[#D2D2D2] focus:border-[#D2D2D2] rounded-md text-[#E6E6E6]">
@@ -38,10 +40,9 @@
 
         <!-- フィルタヘッダー: タグ -->
         <div class="flex">
-            <p class="whitespace-nowrap font-bold">タグ: </p>
-            <div>
-                タグ一覧タグ一覧タグ一覧タグ一覧タグ一覧タグ一覧タグ一覧タグ一覧
-            </div>
+            <p class="text-[#E6E6E6] whitespace-nowrap font-bold">タグ: </p>
+            <ul id="tag_filter_list">
+            </ul>
         </div>
 
         <!-- フィルタヘッダー: 並び順 -->
@@ -90,8 +91,13 @@
         </div>
 
         <!-- フィルタ入力欄: タグ -->
-        <div id="filter_tag_input" class="border-t border-t-[#D2D2D2]" style="display: none;">
-            (仮)タグ選択欄です。
+        <div id="filter_tag_input" class="py-4 px-2 text-[#E6E6E6] border-t border-t-[#D2D2D2]" style="display: none;">
+            <div class="flex flex-col justify-start items-stretch bg-[#2B2B2B] p-4">
+                <input id="tag_search_text" type="text" data-url="{% url 'search_tags' %}"
+                    class="max-w-full mb-2 bg-transparent border-[#5D5C5C] focus:border-[#5D5C5C] rounded-md text-[#E6E6E6]">
+                <ul id="tag_search_list" class="h-[150px] overflow-auto">
+                </ul>
+            </div>
         </div>
 
         <!-- フィルタ入力欄: 並び順 -->
