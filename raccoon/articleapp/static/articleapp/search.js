@@ -44,10 +44,6 @@
         const period_end_date = $('#period_end_date');
         const period_end_date_label = $('label[for=period_end_date]');
 
-        // 実際にgetリクエストのパラメータをセットする隠しフィールド
-        const period_start_date_hidden = $('input[name=period_start_date]');
-        const period_end_date_hidden = $('input[name=period_end_date]');
-
         // 送信前に隠しフィールドに値をセットする
         $('#filter_form').submit((e) => {
             if (CONTEXT["period_start_date"] !== null) {
@@ -55,7 +51,11 @@
                     + '/' + (CONTEXT["period_start_date"].getMonth() + 1)
                     + '/' + CONTEXT["period_start_date"].getDate();
 
-                period_start_date_hidden.val(start_date);
+                $(e.target).append($('<input>', {
+                    type: 'hidden',
+                    name: 'period_start_date',
+                    value: start_date
+                }));
             }
 
             if (CONTEXT["period_end_date"] !== null) {
@@ -63,7 +63,11 @@
                     + '/' + (CONTEXT["period_end_date"].getMonth() + 1)
                     + '/' + CONTEXT["period_end_date"].getDate();
 
-                period_end_date_hidden.val(end_date);
+                $(e.target).append($('<input>', {
+                    type: 'hidden',
+                    name: 'period_end_date',
+                    value: end_date
+                }));
             }
         });
 
