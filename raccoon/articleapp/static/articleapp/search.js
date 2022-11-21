@@ -25,25 +25,107 @@
         });
     });
 
-    // 「期間」選択時の入力欄のアクティブ・非アクティブ切り替え
+
+    // フィルタ「投稿日」選択時に日付を算出して保持する
+    // 「期間」選択時に入力欄のアクティブ・非アクティブを切り替える
     $(() => {
-        let period_start_date = $('#period_start_date')[0];
-        let period_start_date_label = $('label[for=period_start_date]');
-        let period_end_date = $('#period_end_date')[0];
-        let period_end_date_label = $('label[for=period_end_date]');
+        const CONTEXT = {
+            period_start_date: null, // null or Date
+            period_end_date: null // null or Date
+        };
+
+        // フィルター表示部分の要素
+        const period_filter_start = $('#period_filter_start');
+        const period_filter_end = $('#period_filter_end');
+
+        // 「期間」入力欄の要素
+        const period_start_date = $('#period_start_date');
+        const period_start_date_label = $('label[for=period_start_date]');
+        const period_end_date = $('#period_end_date');
+        const period_end_date_label = $('label[for=period_end_date]');
+
+        function updateFilterHeader() {
+            let start_date = '';
+            if (CONTEXT["period_start_date"] !== null) {
+                start_date = CONTEXT["period_start_date"].getFullYear()
+                    + '/' + (CONTEXT["period_start_date"].getMonth() + 1)
+                    + '/' + CONTEXT["period_start_date"].getDate();
+            }
+
+            let end_date = '';
+            if (CONTEXT["period_end_date"] !== null) {
+                end_date = CONTEXT["period_end_date"].getFullYear()
+                    + '/' + (CONTEXT["period_end_date"].getMonth() + 1)
+                    + '/' + CONTEXT["period_end_date"].getDate();
+            }
+
+            period_filter_start.text(start_date);
+            period_filter_end.text(end_date);
+        }
+
+        function specify_period() {
+            const start_date = Date.parse(period_start_date.val());
+            const end_date = Date.parse(period_end_date.val());
+
+            if (!Number.isNaN(start_date)) {
+                CONTEXT['period_start_date'] = new Date(start_date);
+            }
+            if (!Number.isNaN(end_date)) {
+                CONTEXT['period_end_date'] = new Date(end_date);
+            }
+        }
+
         $('input[name=period]').change((e) => {
-            let checked = $('input[name=period]:checked');
-            if (checked.attr('id') === 'specify_period') {
-                period_start_date.toggleAttribute("disabled", false);
+            const today = new Date();
+            const value = $('input[name=period]:checked').val();
+
+            CONTEXT['period_start_date'] = null;
+            CONTEXT['period_end_date'] = null;
+
+            if (value === 'specify_period') {
+                period_start_date[0].toggleAttribute("disabled", false);
                 period_start_date_label.toggleClass('text-[#E6E6E6]', true);
-                period_end_date.toggleAttribute("disabled", false);
+                period_end_date[0].toggleAttribute("disabled", false);
                 period_end_date_label.toggleClass('text-[#E6E6E6]', true);
+
+                specify_period();
             } else {
-                period_start_date.toggleAttribute("disabled", true);
+                period_start_date[0].toggleAttribute("disabled", true);
                 period_start_date_label.toggleClass('text-[#E6E6E6]', false);
-                period_end_date.toggleAttribute("disabled", true);
+                period_end_date[0].toggleAttribute("disabled", true);
                 period_end_date_label.toggleClass('text-[#E6E6E6]', false);
             }
+
+            if (value === 'today') {
+                CONTEXT['period_start_date'] = today;
+                CONTEXT['period_end_date'] = today;
+            } else if (value === 'thisweek') {
+                const monday = new Date(today.getTime());
+                let monday_offset = today.getDay() - 1;
+                if (monday_offset === -1) {
+                    monday_offset = 6;
+                }
+                monday.setDate(today.getDate() - monday_offset);
+                CONTEXT['period_start_date'] = monday;
+                CONTEXT['period_end_date'] = today;
+            } else if (value === 'thismonth') {
+                const month_first = new Date(today.getFullYear(), today.getMonth(), 1);
+                CONTEXT['period_start_date'] = month_first;
+                CONTEXT['period_end_date'] = today;
+            } else if (value === 'thisyear') {
+                const year_first = new Date(today.getFullYear(), 0, 1);
+                CONTEXT['period_start_date'] = year_first;
+                CONTEXT['period_end_date'] = today;
+            }
+
+            updateFilterHeader();
+        });
+
+        $('#period_start_date, #period_end_date').on('input', (e) => {
+            CONTEXT['period_start_date'] = null;
+            CONTEXT['period_end_date'] = null;
+            specify_period();
+            updateFilterHeader();
         });
     });
 
