@@ -29,9 +29,9 @@
 
     <div class=" grid grid-cols-3 gap-x-8">
         <!-- フィルタヘッダー: 期間 -->
-        <div>
+        <div class="mb-2">
             <p class="text-[#E6E6E6] font-bold">
-                投稿日:
+                <span class="mr-1">投稿日:</span>
                 <span>{{ request.GET.period_start_date}}</span>
                 <span> ~ </span>
                 <span>{{ request.GET.period_end_date }}</span>
@@ -39,15 +39,19 @@
         </div>
 
         <!-- フィルタヘッダー: タグ -->
-        <div class="flex">
+        <div class="flex mb-2">
             <p class="text-[#E6E6E6] whitespace-nowrap font-bold">タグ: </p>
             <ul id="tag_filter_list" class="px-1 pb-1 flex flex-wrap gap-1">
             </ul>
         </div>
 
         <!-- フィルタヘッダー: 並び順 -->
-        <div>
-            <p>並び順: <span>新着順</span></p>
+        <div class="mb-2">
+            <p class="text-[#E6E6E6] font-bold">
+                <span class="mr-1">並び順:</span>
+                <span>新着順</span>
+                <span>{{ request.GET.sort}}</span>
+            </p>
         </div>
 
         <!-- フィルタ入力欄: 期間 -->
@@ -93,7 +97,7 @@
         <!-- フィルタ入力欄: タグ -->
         <div id="filter_tag_input" class="py-4 px-2 text-[#E6E6E6] border-t border-t-[#D2D2D2]" style="display: none;">
             <div class="flex flex-col justify-start items-stretch bg-[#2B2B2B] p-4">
-                <input id="tag_search_text" type="text" data-url="{% url 'search_tags' %}"
+                <input id="tag_search_text" type="text" data-url="{% url 'search_tags' %}" placeholder="タグを検索"
                     class="max-w-full mb-2 bg-transparent border-[#5D5C5C] focus:border-[#5D5C5C] rounded-md text-[#E6E6E6]">
                 <ul id="tag_search_list" class="h-[150px] overflow-auto">
                 </ul>
