@@ -176,6 +176,20 @@
 
         const SEARCH_URL = $('#tag_search_text').data("url");
 
+        // 送信前に隠しフィールドでタグを送信する
+        $('#filter_form').submit((e) => {
+            // バックエンドに以下の形式で配列のパラメータを送信する
+            // ?tags=value1&tags=value2 => [value1, value2]
+            CONTEXT["tags_filter"].forEach((tag) => {
+                const input = $('<input>', {
+                    type: 'hidden',
+                    name: 'tags',
+                    value: tag.name
+                });
+                $(e.target).append(input);
+            });
+        });
+
         function updateTagsSourceView() {
             const tag_search_list = $('#tag_search_list');
             tag_search_list.empty();
