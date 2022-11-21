@@ -318,4 +318,18 @@
             requestNewSearch(e.target.value);
         });
     });
+
+    // 並び順選択時にヘッダー部分の表示を変更する
+    $(() => {
+        const sort_filter = $('#sort_filter');
+
+        $('input[name=sort]').change((e) => {
+            const value = $('input[name=sort]:checked').val();
+            if (value === 'date_publish_desc') {
+                sort_filter.text('新着順');
+            } else if (value === 'date_publish_asc') {
+                sort_filter.text('古い順');
+            }
+        });
+    });
 }
