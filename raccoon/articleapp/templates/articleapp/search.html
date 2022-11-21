@@ -32,9 +32,9 @@
         <div class="mb-2">
             <p class="text-[#E6E6E6] font-bold">
                 <span class="mr-1">投稿日:</span>
-                <span>{{ request.GET.period_start_date}}</span>
+                <span id="period_filter_start">{{ request.GET.period_start_date}}</span>
                 <span> ~ </span>
-                <span>{{ request.GET.period_end_date }}</span>
+                <span id="period_filter_end">{{ request.GET.period_end_date }}</span>
             </p>
         </div>
 
@@ -58,24 +58,24 @@
         <div id="filter_period_input" class="py-4 border-t border-t-[#D2D2D2]" style="display: none;">
             <fieldset class="text-[#5D5C5C] min-w-0">
                 <div class="flex items-center mb-2">
-                    <input id="today" type="radio" name="period" class="peer mr-1">
+                    <input id="today" type="radio" name="period" class="peer mr-1" value="today">
                     <label for="today" class="peer-checked:text-[#E6E6E6]">今日</label>
                 </div>
                 <div class="flex items-center mb-2">
-                    <input id="thisweek" type="radio" name="period" class="peer mr-1">
+                    <input id="thisweek" type="radio" name="period" class="peer mr-1" value="thisweek">
                     <label for="thisweek" class="peer-checked:text-[#E6E6E6]">今週</label>
                 </div>
                 <div class="flex items-center mb-2">
-                    <input id="thismonth" type="radio" name="period" class="peer mr-1">
+                    <input id="thismonth" type="radio" name="period" class="peer mr-1" value="thismonth">
                     <label for="thismonth" class="peer-checked:text-[#E6E6E6]">今月</label>
                 </div>
                 <div class="flex items-center mb-2">
-                    <input id="thisyear" type="radio" name="period" class="peer mr-1">
+                    <input id="thisyear" type="radio" name="period" class="peer mr-1" value="thisyear">
                     <label for="thisyear" class="peer-checked:text-[#E6E6E6]">今年</label>
                 </div>
                 <div>
                     <div class="flex items-center mb-2">
-                        <input id="specify_period" type="radio" name="period" class="peer mr-1">
+                        <input id="specify_period" type="radio" name="period" class="peer mr-1" value="specify_period">
                         <label for="specify_period" class="peer-checked:text-[#E6E6E6]">期間</label>
                     </div>
                     <div class="mt-4">
