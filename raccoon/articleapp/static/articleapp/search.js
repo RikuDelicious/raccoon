@@ -147,7 +147,6 @@
         }
 
         function search(keyword) {
-            console.log("search");
             $.get(SEARCH_URL, { keyword: keyword }, onSearchedTags);
         }
 
