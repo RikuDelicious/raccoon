@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+// jqueryで生成した要素にtailwindのスタイルを直接適用できないため、
+// 例外的に本スタイルシートで予め作成しておく。
+.tag_filter_item {
+    @apply mb-1 px-3 py-1 bg-[#091F2C] text-sm text-[#E6E6E6] rounded-full whitespace-nowrap;
+}
+
+.tag_filter_item span {
+    @apply mr-1;
+}
+
+.tag_filter_item svg {
+    @apply w-3 h-3
+}
