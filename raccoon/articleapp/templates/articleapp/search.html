@@ -15,7 +15,8 @@
     <div class="mb-2">
         <input type="text" placeholder="記事を検索" name="keyword"
             class="mr-1 w-full max-w-[560px] bg-transparent border-[#D2D2D2] focus:border-[#D2D2D2] rounded-md text-[#E6E6E6]">
-        <input type="submit" value="検索" class="bg-[#75B6E7] text-[#000000] hover:bg-[#278CDA] hover:underline font-bold rounded-md py-2 px-4">
+        <input type="submit" value="検索"
+            class="bg-[#75B6E7] text-[#000000] hover:bg-[#278CDA] hover:underline font-bold rounded-md py-2 px-4">
     </div>
     <button type="button" id="button_filter_accordion"
         class="px-2 py-1 rounded-md flex font-bold text-[#E6E6E6] mb-2 hover:bg-[#2B2B2B]">
@@ -83,11 +84,13 @@
                             <label for="period_start_date">開始:</label>
                             <input id="period_start_date" type="date" disabled
                                 class="inline-block max-w-full h-8 bg-[#2B2B2B] border-[#D2D2D2]">
+                            <input type="hidden" name="period_start_date">
                         </div>
                         <div>
                             <label for="period_end_date">終了:</label>
                             <input id="period_end_date" type="date" disabled
                                 class="inline-block max-w-full h-8 bg-[#2B2B2B] border-[#D2D2D2]">
+                            <input type="hidden" name="period_end_date">
                         </div>
                     </div>
                 </div>
