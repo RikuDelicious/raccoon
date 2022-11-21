@@ -1,4 +1,6 @@
+from django.http import JsonResponse
 from django.shortcuts import render
+
 from .models import Post, Tag
 
 
@@ -23,3 +25,12 @@ def search(request):
     context = {}
 
     return render(request, "articleapp/search.html", context)
+
+
+def search_tags(request):
+    keyword = request.GET.get("keyword")
+    tags = Tag.objects.all()
+    if keyword is not None:
+        tags = tags.filter(name__contains=keyword)
+    data = {"tags": list(tags.values())}
+    return JsonResponse(data)
