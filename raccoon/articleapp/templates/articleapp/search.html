@@ -120,15 +120,22 @@
     </div>
 </form>
 
-
-<div class="border-t border-t-[#D2D2D2]">
-
+<!-- pagination nav -->
+<div class="border-t border-t-[#D2D2D2] pt-10 mb-6">
+    {% include "articleapp/snippets/pagination_nav.html" with page=post_list_page pagination_nav=post_list_pagination_nav %}
 </div>
+
 
 <!-- post_list -->
 <div>
     {% include "articleapp/snippets/post_list.html" with posts=post_list_page.object_list %}
 </div>
+
+<!-- pagination nav -->
+<div class="border-t border-t-[#D2D2D2] pt-10 mb-6">
+    {% include "articleapp/snippets/pagination_nav.html" with page=post_list_page pagination_nav=post_list_pagination_nav %}
+</div>
+
 {% endblock main %}
 
 {% block scripts %}

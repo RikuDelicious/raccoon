@@ -1,0 +1,54 @@
+{% load transform_query %}
+<div class="flex justify-center items-center gap-2">
+    {% if page.has_previous %}
+        <a href="?{% transform_query page=page.previous_page_number %}">
+            <div class="w-10 h-10 border border-[#D2D2D2] hover:border-[#278CDA] rounded-md text-center leading-10 whitespace-nowrap text-[#E6E6E6] hover:text-[#278CDA] font-bold  flex justify-center items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75" />
+                  </svg>                  
+            </div>
+        </a>
+    {% endif %}
+
+    {% if pagination_nav.display_first %}
+        <a href="?{% transform_query page=1 %}">
+            <div class="w-10 h-10 border border-[#D2D2D2] hover:border-[#278CDA] rounded-md text-center leading-10 whitespace-nowrap text-[#E6E6E6] hover:text-[#278CDA] font-bold">
+                1
+            </div>
+        </a>
+        <span class="text-[#D2D2D2]">...</span>
+    {% endif %}
+
+    {% for number in pagination_nav.numbers %}
+        <a href="?{% transform_query page=number %}">
+            {% if number == page.number %}
+                <div class="w-10 h-10 bg-[#75B6E7] hover:bg-[#278CDA] rounded-md text-center leading-10 whitespace-nowrap text-[#000000] font-bold">
+                    {{ number }}
+                </div>
+            {% else %}
+                <div class="w-10 h-10 border border-[#D2D2D2] hover:border-[#278CDA] rounded-md text-center leading-10 whitespace-nowrap text-[#E6E6E6] hover:text-[#278CDA] font-bold">
+                    {{ number }}
+                </div>
+            {% endif %}
+        </a>
+    {% endfor %}
+
+    {% if pagination_nav.display_last %}
+        <span class="text-[#D2D2D2]">...</span>
+        <a href="?{% transform_query page=page.paginator.num_pages %}">
+            <div class="w-10 h-10 border border-[#D2D2D2] hover:border-[#278CDA] rounded-md text-center leading-10 whitespace-nowrap text-[#E6E6E6] hover:text-[#278CDA] font-bold">
+                {{ page.paginator.num_pages }}
+            </div>
+        </a>
+    {% endif %}
+
+    {% if page.has_next %}
+        <a href="?{% transform_query page=page.next_page_number %}">
+            <div class="w-10 h-10 border border-[#D2D2D2] hover:border-[#278CDA] rounded-md whitespace-nowrap text-[#E6E6E6] hover:text-[#278CDA] font-bold flex justify-center items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+                  </svg>                  
+            </div>
+        </a>
+    {% endif %}
+</div>
