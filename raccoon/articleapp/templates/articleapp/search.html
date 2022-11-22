@@ -121,14 +121,13 @@
 </form>
 
 
-
-
-
-
-
-
 <div class="border-t border-t-[#D2D2D2]">
 
+</div>
+
+<!-- post_list -->
+<div>
+    {% include "articleapp/snippets/post_list.html" with posts=post_list_page.object_list %}
 </div>
 {% endblock main %}
 
