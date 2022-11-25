@@ -355,6 +355,18 @@
                 sort_filter.text('古い順');
             }
         });
+
+        // ページ表示時にフィルタ「並び順」入力欄でリクエストの条件を復元する
+        {
+            const queryString = window.location.search;
+            const params = new URLSearchParams(queryString);
+            const param_sort = params.get('sort');
+            const sort_values = ['date_publish_desc', 'date_publish_asc'];
+            if (param_sort !== null && sort_values.includes(param_sort)) {
+                $('input[name=sort]').val([param_sort]);
+                $('input[name=sort]').change();
+            }
+        }
     });
 
     // 検索ボタンの送信イベント
