@@ -154,6 +154,23 @@
             specify_period();
             updateFilterHeader();
         });
+
+
+        // ページ表示時にフィルタ「投稿日」入力欄でリクエストの条件を復元する
+        {
+            const queryString = window.location.search;
+            const params = new URLSearchParams(queryString);
+            const param_period = params.get('period');
+            const period_values = ['specify_period', 'today', 'thisweek', 'thismonth', 'thisyear'];
+            if (param_period !== null && period_values.includes(param_period) ) {
+                $('input[name=period]').val([param_period]);
+                $('input[name=period]').change();
+                if (param_period === 'specify_period') {
+                    $('#period_start_date').val(params.get('period_start_date').replace(/\//g, '-'))
+                    $('#period_end_date').val(params.get('period_end_date').replace(/\//g, '-'))
+                }
+            }
+        }
     });
 
     // タグ検索用の処理 テキストを入力すると都度検索を行う(インクリメンタルサーチ)。
