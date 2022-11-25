@@ -376,6 +376,10 @@
             if (param_sort !== null && sort_values.includes(param_sort)) {
                 $('input[name=sort]').val([param_sort]);
                 $('input[name=sort]').change();
+            } else {
+                // デフォルト値は新着順にする
+                $('input[name=sort]').val(['date_publish_desc']);
+                $('input[name=sort]').change();
             }
         }
     });
