@@ -1,7 +1,7 @@
 import datetime
 
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
@@ -32,9 +32,22 @@ def search(request):
 
     # フィルタ: タグ
     if "tags" in querydict:
-        tags = querydict.getlist("tags")
+        # 空のquerysetを生成
+        posts_filtered_tags = Post.objects.none()
+
+        # タグ名からタグのリストを生成
+        tags_name = querydict.getlist("tags")
+        tags = Tag.objects.filter(name__in=tags_name)
         for tag in tags:
-            queryset = queryset.filter(tags__name=tag)
+            posts_filtered_tags = posts_filtered_tags | Post.objects.filter(tags=tag)
+        
+        posts_filtered_tags = posts_filtered_tags.annotate(
+            post_count=Count("id")
+        ).filter(
+            post_count__exact=len(tags)
+        )
+        
+        queryset = posts_filtered_tags
 
     # フィルタ: 期間_開始
     if "period_start_date" in querydict:
