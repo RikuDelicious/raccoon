@@ -183,8 +183,7 @@
     // タグ検索用の処理 テキストを入力すると都度検索を行う(インクリメンタルサーチ)。
     $(() => {
         class Tag {
-            constructor(id, name) {
-                this.id = id;
+            constructor(name) {
                 this.name = name;
             }
         }
@@ -193,12 +192,12 @@
             tags_source: [], // array of Tag
             tags_filter: [], // array of Tag
             tags_filter_add: function (tagToAdd) {
-                if (!this.tags_filter.some(tag => tag.id === tagToAdd.id)) {
+                if (!this.tags_filter.some(tag => tag.name === tagToAdd.name)) {
                     this.tags_filter.push(tagToAdd);
                 }
             },
             tags_filter_remove: function (tagToRemove) {
-                this.tags_filter = this.tags_filter.filter(tag => tag.id !== tagToRemove.id);
+                this.tags_filter = this.tags_filter.filter(tag => tag.name !== tagToRemove.name);
             }
         }
 
@@ -239,7 +238,7 @@
 
                 // 既にフィルタに追加済みのタグが検索結果に含まれている場合、
                 // そのタグは検索結果一覧には表示しない。
-                if (CONTEXT["tags_filter"].some(tag_filter => tag_filter.id === tag.id)) {
+                if (CONTEXT["tags_filter"].some(tag_filter => tag_filter.name === tag.name)) {
                     li.hide();
                 }
 
@@ -270,14 +269,14 @@
 
         function onSearchedTags(data) {
             // CONTEXT["tags_source"]を更新する
-            let tagsFromData = data["tags"].map(tag => new Tag(tag["id"], tag["name"]));
+            let tagsFromData = data["tags"].map(tag => new Tag(tag["name"]));
 
             // 前回のタグ取得結果と同じならば、更新を行わない。
             if (tagsFromData.length === CONTEXT["tags_source"].length) {
                 let isSameResult = true;
 
                 for (let i = 0; i < tagsFromData.length; i++) {
-                    if (tagsFromData[i].id !== CONTEXT["tags_source"][i].id) {
+                    if (tagsFromData[i].name !== CONTEXT["tags_source"][i].name) {
                         isSameResult = false;
                         break;
                     }
