@@ -53,7 +53,7 @@ def search(request):
     if "period_start_date" in querydict:
         try:
             start_date = timezone.make_aware(
-                datetime.datetime.strptime(querydict["period_start_date"], "%Y/%m/%d")
+                datetime.datetime.strptime(querydict["period_start_date"], "%Y-%m-%d")
             )
             queryset = queryset.filter(date_publish__gte=start_date)
         except ValueError:
@@ -64,7 +64,7 @@ def search(request):
     if "period_end_date" in querydict:
         try:
             end_date = timezone.make_aware(
-                datetime.datetime.strptime(querydict["period_end_date"], "%Y/%m/%d")
+                datetime.datetime.strptime(querydict["period_end_date"], "%Y-%m-%d")
             )
             end_date = end_date + datetime.timedelta(days=1)
             queryset = queryset.filter(date_publish__lt=end_date)
