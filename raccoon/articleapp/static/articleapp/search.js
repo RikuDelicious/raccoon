@@ -48,8 +48,8 @@
         $('#filter_form').submit((e) => {
             if (CONTEXT["period_start_date"] !== null) {
                 let start_date = CONTEXT["period_start_date"].getFullYear()
-                    + '/' + (CONTEXT["period_start_date"].getMonth() + 1)
-                    + '/' + CONTEXT["period_start_date"].getDate();
+                    + '-' + (CONTEXT["period_start_date"].getMonth() + 1).toString().padStart(2, '0')
+                    + '-' + CONTEXT["period_start_date"].getDate().toString().padStart(2, '0');
 
                 $(e.target).append($('<input>', {
                     type: 'hidden',
@@ -60,8 +60,8 @@
 
             if (CONTEXT["period_end_date"] !== null) {
                 let end_date = CONTEXT["period_end_date"].getFullYear()
-                    + '/' + (CONTEXT["period_end_date"].getMonth() + 1)
-                    + '/' + CONTEXT["period_end_date"].getDate();
+                    + '-' + (CONTEXT["period_end_date"].getMonth() + 1).toString().padStart(2, '0')
+                    + '-' + CONTEXT["period_end_date"].getDate().toString().padStart(2, '0');
 
                 $(e.target).append($('<input>', {
                     type: 'hidden',
@@ -75,15 +75,15 @@
             let start_date = '';
             if (CONTEXT["period_start_date"] !== null) {
                 start_date = CONTEXT["period_start_date"].getFullYear()
-                    + '/' + (CONTEXT["period_start_date"].getMonth() + 1)
-                    + '/' + CONTEXT["period_start_date"].getDate();
+                    + '年' + (CONTEXT["period_start_date"].getMonth() + 1)
+                    + '月' + CONTEXT["period_start_date"].getDate() + '日';
             }
 
             let end_date = '';
             if (CONTEXT["period_end_date"] !== null) {
                 end_date = CONTEXT["period_end_date"].getFullYear()
-                    + '/' + (CONTEXT["period_end_date"].getMonth() + 1)
-                    + '/' + CONTEXT["period_end_date"].getDate();
+                    + '年' + (CONTEXT["period_end_date"].getMonth() + 1)
+                    + '月' + CONTEXT["period_end_date"].getDate() + '日';
             }
 
             period_filter_start.text(start_date);
@@ -166,8 +166,15 @@
                 $('input[name=period]').val([param_period]);
                 $('input[name=period]').change();
                 if (param_period === 'specify_period') {
-                    $('#period_start_date').val(params.get('period_start_date').replace(/\//g, '-'))
-                    $('#period_end_date').val(params.get('period_end_date').replace(/\//g, '-'))
+                    if (params.get('period_start_date') !== null) {
+                        $('#period_start_date').val(params.get('period_start_date'))
+                        $('#period_start_date').trigger('input');
+                    }
+
+                    if (params.get('period_end_date') !== null) {
+                        $('#period_end_date').val(params.get('period_end_date'))
+                        $('#period_end_date').trigger('input');
+                    }
                 }
             }
         }
