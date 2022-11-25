@@ -340,6 +340,17 @@
 
             requestNewSearch(e.target.value);
         });
+
+        // ページ表示時にフィルタ「タグ」入力欄でリクエストの条件を復元する
+        {
+            const queryString = window.location.search;
+            const params = new URLSearchParams(queryString);
+            const param_tags = params.getAll('tags');
+            param_tags.forEach((tag_name) => {
+                CONTEXT.tags_filter_add(new Tag(tag_name));
+                updateTagsFilterView();
+            });
+        }
     });
 
     // 並び順選択時にヘッダー部分の表示を変更する
