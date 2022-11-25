@@ -4,5 +4,4 @@
         "--max-line-length=88"
     ],
     "python.formatting.provider": "black",
-    "editor.formatOnSave": true
 }
