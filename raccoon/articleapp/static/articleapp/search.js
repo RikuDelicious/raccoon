@@ -106,6 +106,7 @@
             const today = new Date();
             const value = $('input[name=period]:checked').val();
 
+            // value === 'period_unspecified'の場合は期間指定なしになる
             CONTEXT['period_start_date'] = null;
             CONTEXT['period_end_date'] = null;
 
