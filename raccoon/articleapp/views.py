@@ -145,6 +145,6 @@ def search_tags(request):
     keyword = request.GET.get("keyword")
     tags = Tag.objects.all()
     if keyword is not None:
-        tags = tags.filter(name__contains=keyword)
+        tags = tags.filter(name__icontains=keyword)
     data = {"tags": list(tags.values())}
     return JsonResponse(data)
