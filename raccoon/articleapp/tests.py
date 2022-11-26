@@ -414,6 +414,34 @@ class SearchViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[20]])
         self.assertEqual(response.context["post_list_page"].number, 3)
+    
+    def test_公開中の投稿のみが表示される(self):
+        posts = [
+            Post(
+                title=f"post_{i}_タイトル",
+                body=f"post_{i}_body_本文",
+                user=self.users[0],
+                is_published=True,
+                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i))
+            )
+            for i in range(0, 5)
+        ]
+        posts += [
+            Post(
+                title=f"post_{i}_タイトル",
+                body=f"post_{i}_body_本文",
+                user=self.users[0],
+                is_published=False,
+                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i))
+            )
+            for i in range(5, 10)
+        ]
+        Post.objects.bulk_create(posts)
+
+        c = Client()
+        response = c.get(self.url_path)
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[0:5])
 
 
 
