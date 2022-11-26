@@ -90,6 +90,9 @@ def search(request):
         if sort_value == "date_publish_asc":
             queryset = queryset.order_by("date_publish")
 
+    # 公開中の投稿のみを表示する
+    queryset = queryset.filter(is_published__exact=True)
+
     # ページネーション
     paginator = Paginator(queryset, 10)
     page_number = 1
