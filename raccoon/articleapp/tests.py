@@ -375,6 +375,46 @@ class SearchViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertListEqual(list(response.context["post_list_page"].object_list), list(reversed(posts)))
 
+    def test_ページネーション(self):
+        posts = [
+            Post(
+                title=f"post_{i}_タイトル",
+                body=f"post_{i}_body_本文",
+                user=self.users[0],
+                is_published=True,
+                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i))
+            )
+            for i in range(21)
+        ]
+        Post.objects.bulk_create(posts)
+
+        c = Client()
+        response = c.get(self.url_path)
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[0:10])
+
+        response = c.get(self.url_path, {"page": 1})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[0:10])
+
+        response = c.get(self.url_path, {"page": 2})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[10:20])
+
+        response = c.get(self.url_path, {"page": 3})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[20]])
+
+        response = c.get(self.url_path, {"page": 4})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[20]])
+        self.assertEqual(response.context["post_list_page"].number, 3)
+
+        response = c.get(self.url_path, {"page": 0})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[20]])
+        self.assertEqual(response.context["post_list_page"].number, 3)
+
 
 
         
