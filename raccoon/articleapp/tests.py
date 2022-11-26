@@ -2,7 +2,7 @@ import datetime
 import random
 
 from django.test import Client, TestCase
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 
 from .models import Post, Tag, User
@@ -191,3 +191,130 @@ class IndexViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(list(response.context["posts"]), [posts[0]])
         self.assertEqual(list(response.context["tags"]), [tags[0]])
+
+class SearchViewTests(TestCase):
+    def setUp(self):
+        user = User.objects.create_user(username="testuser_1", password="testuser_1")
+        self.users = [user]
+        self.url_path = reverse_lazy("search")
+        self.today_datetime = timezone.now()
+        self.date_format = "%Y-%m-%d"
+
+    def test_投稿無しでページアクセス(self):
+        c = Client()
+        response = c.get(self.url_path)
+        self.assertEqual(response.status_code, 200)
+    
+    def test_投稿ありでページアクセス(self):
+        tags = [Tag(name=f"tag_{i}") for i in range(10)]
+        Tag.objects.bulk_create(tags)
+        posts = [
+            Post(
+                title=f"post_{i}",
+                body=f"post_{i}_body",
+                user=self.users[0],
+                is_published=True,
+                date_publish=(self.today_datetime.date()),
+            )
+            for i in range(10)
+        ]
+        Post.objects.bulk_create(posts)
+        for post in posts:
+            post.tags.add(random.choice(tags))
+        c = Client()
+        response = c.get(self.url_path)
+        self.assertEqual(response.status_code, 200)
+
+    def test_フィルタ_タグ(self):
+        tags = [Tag(name=f"tag_{i}") for i in range(3)]
+        Tag.objects.bulk_create(tags)
+        posts = [
+            Post(
+                title=f"post_{i}",
+                body=f"post_{i}_body",
+                user=self.users[0],
+                is_published=True,
+                date_publish=(self.today_datetime.date()),
+            )
+            for i in range(10)
+        ]
+        Post.objects.bulk_create(posts)
+        for post in posts[0:3]:
+            post.tags.add(tags[0])
+
+        for post in posts[3:6]:
+            post.tags.add(tags[1])
+
+        for post in posts[6:10]:
+            post.tags.add(tags[0], tags[1])
+
+        c = Client()
+        response = c.get(self.url_path, {"tags": ["tag_0"]})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[0:3] + posts[6:10])
+
+        response = c.get(self.url_path, {"tags": ["tag_1"]})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[3:10])
+
+        response = c.get(self.url_path, {"tags": ["tag_0", "tag_1"]})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[6:10])
+
+        response = c.get(self.url_path, {"tags": ["tag_2"]})
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerysetEqual(response.context["post_list_page"].object_list, Post.objects.none())
+
+        response = c.get(self.url_path, {"tags": ["tag_0", "tag_1", "tag_2"]})
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerysetEqual(response.context["post_list_page"].object_list, Post.objects.none())
+    
+    def test_フィルタ_期間(self):
+        posts = [
+            Post(
+                title=f"post_{i}",
+                body=f"post_{i}_body",
+                user=self.users[0],
+                is_published=True,
+                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i))
+            )
+            for i in range(10)
+        ]
+        Post.objects.bulk_create(posts)
+
+        c = Client()
+        start_date = (self.today_datetime.date() + datetime.timedelta(days=(-7))).strftime(self.date_format)
+        response = c.get(self.url_path, {"period_start_date": start_date})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[0:8])
+
+        end_date = (self.today_datetime.date() + datetime.timedelta(days=(-2))).strftime(self.date_format)
+        response = c.get(self.url_path, {"period_end_date": end_date})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[2:])
+
+        start_date = (self.today_datetime.date() + datetime.timedelta(days=(-7))).strftime(self.date_format)
+        end_date = (self.today_datetime.date() + datetime.timedelta(days=(-2))).strftime(self.date_format)
+        response = c.get(self.url_path, {"period_start_date": start_date, "period_end_date": end_date})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[2:8])
+
+        start_date = (self.today_datetime.date() + datetime.timedelta(days=(-5))).strftime(self.date_format)
+        end_date = (self.today_datetime.date() + datetime.timedelta(days=(-5))).strftime(self.date_format)
+        response = c.get(self.url_path, {"period_start_date": start_date, "period_end_date": end_date})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[5]])
+
+        start_date = (self.today_datetime.date() + datetime.timedelta(days=(-2))).strftime(self.date_format)
+        end_date = (self.today_datetime.date() + datetime.timedelta(days=(-7))).strftime(self.date_format)
+        response = c.get(self.url_path, {"period_start_date": start_date, "period_end_date": end_date})
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerysetEqual(response.context["post_list_page"].object_list, Post.objects.none())
+
+
+
+        
+
+
+
+
