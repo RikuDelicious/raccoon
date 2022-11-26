@@ -349,6 +349,32 @@ class SearchViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertListEqual(list(response.context["post_list_page"].object_list), posts)
 
+    def test_フィルタ_並び順(self):
+        posts = [
+            Post(
+                title=f"post_{i}_タイトル",
+                body=f"post_{i}_body_本文",
+                user=self.users[0],
+                is_published=True,
+                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i))
+            )
+            for i in range(10)
+        ]
+        Post.objects.bulk_create(posts)
+
+        c = Client()
+        response = c.get(self.url_path)
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), posts)
+
+        response = c.get(self.url_path, {"sort": "date_publish_desc"})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), posts)
+
+        response = c.get(self.url_path, {"sort": "date_publish_asc"})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), list(reversed(posts)))
+
 
 
         
