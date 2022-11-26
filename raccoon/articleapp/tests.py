@@ -310,6 +310,44 @@ class SearchViewTests(TestCase):
         response = c.get(self.url_path, {"period_start_date": start_date, "period_end_date": end_date})
         self.assertEqual(response.status_code, 200)
         self.assertQuerysetEqual(response.context["post_list_page"].object_list, Post.objects.none())
+    
+    def test_フィルタ_キーワード(self):
+        posts = [
+            Post(
+                title=f"post_{i}_タイトル",
+                body=f"post_{i}_body_本文",
+                user=self.users[0],
+                is_published=True,
+                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i))
+            )
+            for i in range(10)
+        ]
+        Post.objects.bulk_create(posts)
+
+        c = Client()
+        response = c.get(self.url_path, {"keyword": "post_5_タイトル"})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[5]])
+
+        response = c.get(self.url_path, {"keyword": "_5_タイ"})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[5]])
+
+        response = c.get(self.url_path, {"keyword": "post_5_body_本文"})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[5]])
+
+        response = c.get(self.url_path, {"keyword": "_5_body_本"})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[5]])
+
+        response = c.get(self.url_path, {"keyword": "_5_"})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[5]])
+
+        response = c.get(self.url_path, {"keyword": "post_"})
+        self.assertEqual(response.status_code, 200)
+        self.assertListEqual(list(response.context["post_list_page"].object_list), posts)
 
 
 
