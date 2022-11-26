@@ -25,7 +25,7 @@ def index(request):
     return render(request, "articleapp/index.html", {"posts": posts, "tags": tags})
 
 
-def search(request):
+def search(request, paginate_by=10):
     queryset = Post.objects.all()
     querydict = request.GET
     context = {}
@@ -94,7 +94,7 @@ def search(request):
     queryset = queryset.filter(is_published__exact=True)
 
     # ページネーション
-    paginator = Paginator(queryset, 10)
+    paginator = Paginator(queryset, paginate_by)
     page_number = 1
     if "page" in querydict:
         try:
