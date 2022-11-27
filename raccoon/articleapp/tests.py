@@ -744,3 +744,21 @@ class PostDetailViewTests(TestCase):
             )
         )
         self.assertEqual(response.status_code, 404)
+
+    def test_存在しないユーザーの投稿にアクセス(self):
+        Post.objects.create(
+            title="post_0_tite",
+            body="post_0_body",
+            user=self.users[0],
+            slug="post_0_slug",
+            is_published=True,
+            date_publish=self.today_datetime.date(),
+        )
+        c = Client()
+        response = c.get(
+            reverse(
+                "post_detail",
+                kwargs={"username": "testuser", "slug": "post_0_slug"},
+            )
+        )
+        self.assertEqual(response.status_code, 404)
