@@ -360,10 +360,10 @@
 
         // 並び順選択時にヘッダー部分の表示を変更する
         {
-            const sort_filter = $('#sort_filter');
+            const sort_filter = FILTER_FORM.find('#sort_filter');
 
             $('input[name=sort]').change((e) => {
-                const value = $('input[name=sort]:checked').val();
+                const value = FILTER_FORM.find('input[name=sort]:checked').val();
                 if (value === 'date_publish_desc') {
                     sort_filter.text('新着順');
                 } else if (value === 'date_publish_asc') {
@@ -378,12 +378,12 @@
                 const param_sort = params.get('sort');
                 const sort_values = ['date_publish_desc', 'date_publish_asc'];
                 if (param_sort !== null && sort_values.includes(param_sort)) {
-                    $('input[name=sort]').val([param_sort]);
-                    $('input[name=sort]').change();
+                    FILTER_FORM.find('input[name=sort]').val([param_sort]);
+                    FILTER_FORM.find('input[name=sort]').change();
                 } else {
                     // デフォルト値は新着順にする
-                    $('input[name=sort]').val(['date_publish_desc']);
-                    $('input[name=sort]').change();
+                    FILTER_FORM.find('input[name=sort]').val(['date_publish_desc']);
+                    FILTER_FORM.find('input[name=sort]').change();
                 }
             }
         }
