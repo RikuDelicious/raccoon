@@ -152,9 +152,9 @@ class IndexViewTests(TestCase):
         tags = [Tag(name=f"tag_{i + 1}") for i in range(self.number_of_tags + 10)]
         Tag.objects.bulk_create(tags)
 
-        # 全てのタグを何らかの記事に紐づけておく。
+        # 全てのタグを公開中の記事に紐づけておく。
         for tag in tags:
-            random.choice(posts).tags.add(tag)
+            posts[0].tags.add(tag)
 
         c = Client()
         response = c.get(reverse("index"))
