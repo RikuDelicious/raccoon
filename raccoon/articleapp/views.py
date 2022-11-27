@@ -40,13 +40,11 @@ def search(request):
         tags = Tag.objects.filter(name__in=tags_name)
         for tag in tags:
             posts_filtered_tags = posts_filtered_tags | Post.objects.filter(tags=tag)
-        
+
         posts_filtered_tags = posts_filtered_tags.annotate(
             post_count=Count("id")
-        ).filter(
-            post_count__exact=len(tags)
-        )
-        
+        ).filter(post_count__exact=len(tags))
+
         queryset = posts_filtered_tags
 
     # フィルタ: 期間_開始
