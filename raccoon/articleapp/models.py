@@ -3,10 +3,12 @@ from django.db import models
 from django.utils import timezone
 import random, string
 
+
 def generate_random_slug():
     seed = string.ascii_lowercase + string.digits
     random_chars = random.choices(seed, k=16)
-    return ''.join(random_chars)
+    return "".join(random_chars)
+
 
 # Create your models here.
 class User(AbstractUser):
