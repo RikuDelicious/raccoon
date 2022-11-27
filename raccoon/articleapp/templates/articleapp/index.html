@@ -23,46 +23,7 @@
 <div>
     <h2 class="text-3xl font-bold text-[#E6E6E6] mb-6">新着記事</h2>
     <div class="mb-4">
-        {% for post in posts %}
-        <div class="py-6 px-3 border-t border-t-[#D2D2D2]">
-            <div class="flex items-center mb-1">
-                <a href="" class="mr-2"><img src="" alt="" width="32" height="32"></a>
-                <div>
-                    <div>
-                        <a href="" class="text-[#E6E6E6] hover:underline">
-                            @{{ post.user.username }}
-                            {% if post.user.display_name %}
-                            <span>({{ post.user.display_name }})</span>
-                            {% endif %}
-                        </a>
-
-                    </div>
-                    <p class="text-[#5D5C5C]">
-                        {{ post.date_publish }}
-                    </p>
-                </div>
-            </div>
-            <h3 class="mb-2">
-                <a href=""
-                    class="text-2xl font-bold text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA]">
-                    {{ post.title }}
-                </a>
-            </h3>
-            <div class="mb-6">
-                {% for tag in post.tags.all %}
-                <a href=""
-                    class="inline-block mb-1 px-2 py-1 bg-[#091F2C] text-sm text-[#E6E6E6] rounded-md whitespace-nowrap">
-                    # {{tag.name }}
-                </a>
-                {% endfor %}
-            </div>
-            <div>
-                <p class="text-[#E6E6E6]">{{ post.body | truncatechars:150 }}</p>
-                <a href="" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA]">read
-                    more</a>
-            </div>
-        </div>
-        {% endfor %}
+        {% include "articleapp/snippets/post_list.html" with posts=posts %}
     </div>
     <div class="text-center">
         <a href="" class="text-xl font-bold text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA]">
