@@ -169,7 +169,7 @@ def post_detail(request, username, slug):
     user = get_object_or_404(
         User, username=username, is_staff=False, is_superuser=False
     )
-    post = get_object_or_404(Post, user=user, slug=slug)
+    post = get_object_or_404(Post, user=user, slug=slug, is_published=True)
     other_posts = Post.objects.filter(user=user).exclude(id=post.id)[0:5]
     context = {"post": post, "post_user": user, "other_posts": other_posts}
     return render(request, "articleapp/post_detail.html", context)
