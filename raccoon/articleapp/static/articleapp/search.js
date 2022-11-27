@@ -1,5 +1,10 @@
 'use strict';
 {
+    $(() => {
+        const FILTER_FORM = $('#filter_form');
+
+    });
+
     // 「フィルタ」ボタン押下時のアイコンアニメーションとアコーディオン開閉処理
     $(() => {
         let inputs = $('#filter_period_input, #filter_tag_input, #filter_sort_input');
