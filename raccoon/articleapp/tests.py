@@ -192,6 +192,27 @@ class IndexViewTests(TestCase):
         self.assertEqual(list(response.context["posts"]), [posts[0]])
         self.assertEqual(list(response.context["tags"]), [tags[0]])
 
+    def test_タグが重複して表示されないこと(self):
+        user = User.objects.create_user(username="testuser", password="testuser")
+        tags = [Tag(name=f"tag_{i}") for i in range(3)]
+        Tag.objects.bulk_create(tags)
+        posts = [
+            Post(
+                title=f"post_{i}",
+                body=f"post_{i}_body",
+                user=user,
+                is_published=True,
+                date_publish=self.today_datetime.date(),
+            )
+            for i in range(self.number_of_posts)
+        ]
+        Post.objects.bulk_create(posts)
+        for post in posts:
+            post.tags.add(tags[0])
+        c = Client()
+        response = c.get(reverse("index"))
+        self.assertEqual(list(response.context["tags"]), [tags[0]])
+
 
 class SearchViewTests(TestCase):
     def setUp(self):
