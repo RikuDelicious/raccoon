@@ -356,34 +356,35 @@
                 });
             }
         }
-    });
 
-    // 並び順選択時にヘッダー部分の表示を変更する
-    $(() => {
-        const sort_filter = $('#sort_filter');
 
-        $('input[name=sort]').change((e) => {
-            const value = $('input[name=sort]:checked').val();
-            if (value === 'date_publish_desc') {
-                sort_filter.text('新着順');
-            } else if (value === 'date_publish_asc') {
-                sort_filter.text('古い順');
-            }
-        });
-
-        // ページ表示時にフィルタ「並び順」入力欄でリクエストの条件を復元する
+        // 並び順選択時にヘッダー部分の表示を変更する
         {
-            const queryString = window.location.search;
-            const params = new URLSearchParams(queryString);
-            const param_sort = params.get('sort');
-            const sort_values = ['date_publish_desc', 'date_publish_asc'];
-            if (param_sort !== null && sort_values.includes(param_sort)) {
-                $('input[name=sort]').val([param_sort]);
-                $('input[name=sort]').change();
-            } else {
-                // デフォルト値は新着順にする
-                $('input[name=sort]').val(['date_publish_desc']);
-                $('input[name=sort]').change();
+            const sort_filter = $('#sort_filter');
+
+            $('input[name=sort]').change((e) => {
+                const value = $('input[name=sort]:checked').val();
+                if (value === 'date_publish_desc') {
+                    sort_filter.text('新着順');
+                } else if (value === 'date_publish_asc') {
+                    sort_filter.text('古い順');
+                }
+            });
+
+            // ページ表示時にフィルタ「並び順」入力欄でリクエストの条件を復元する
+            {
+                const queryString = window.location.search;
+                const params = new URLSearchParams(queryString);
+                const param_sort = params.get('sort');
+                const sort_values = ['date_publish_desc', 'date_publish_asc'];
+                if (param_sort !== null && sort_values.includes(param_sort)) {
+                    $('input[name=sort]').val([param_sort]);
+                    $('input[name=sort]').change();
+                } else {
+                    // デフォルト値は新着順にする
+                    $('input[name=sort]').val(['date_publish_desc']);
+                    $('input[name=sort]').change();
+                }
             }
         }
     });
