@@ -1,7 +1,12 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
+import random, string
 
+def generate_random_slug():
+    seed = string.ascii_lowercase + string.digits
+    random_chars = random.choices(seed, k=16)
+    return ''.join(random_chars)
 
 # Create your models here.
 class User(AbstractUser):
@@ -12,6 +17,7 @@ class Post(models.Model):
     title = models.CharField(max_length=200)
     body = models.TextField()
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    slug = models.SlugField(default=generate_random_slug)
     tags = models.ManyToManyField(to="Tag", blank=True)
     is_published = models.BooleanField(default=False)
     date_publish = models.DateField(null=True)
