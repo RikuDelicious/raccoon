@@ -192,6 +192,7 @@ class IndexViewTests(TestCase):
         self.assertEqual(list(response.context["posts"]), [posts[0]])
         self.assertEqual(list(response.context["tags"]), [tags[0]])
 
+
 class SearchViewTests(TestCase):
     def setUp(self):
         user = User.objects.create_user(username="testuser_1", password="testuser_1")
@@ -204,7 +205,7 @@ class SearchViewTests(TestCase):
         c = Client()
         response = c.get(self.url_path)
         self.assertEqual(response.status_code, 200)
-    
+
     def test_投稿ありでページアクセス(self):
         tags = [Tag(name=f"tag_{i}") for i in range(10)]
         Tag.objects.bulk_create(tags)
@@ -251,24 +252,35 @@ class SearchViewTests(TestCase):
         c = Client()
         response = c.get(self.url_path, {"tags": ["tag_0"]})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[0:3] + posts[6:10])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list),
+            posts[0:3] + posts[6:10],
+        )
 
         response = c.get(self.url_path, {"tags": ["tag_1"]})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[3:10])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), posts[3:10]
+        )
 
         response = c.get(self.url_path, {"tags": ["tag_0", "tag_1"]})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[6:10])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), posts[6:10]
+        )
 
         response = c.get(self.url_path, {"tags": ["tag_2"]})
         self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(response.context["post_list_page"].object_list, Post.objects.none())
+        self.assertQuerysetEqual(
+            response.context["post_list_page"].object_list, Post.objects.none()
+        )
 
         response = c.get(self.url_path, {"tags": ["tag_0", "tag_1", "tag_2"]})
         self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(response.context["post_list_page"].object_list, Post.objects.none())
-    
+        self.assertQuerysetEqual(
+            response.context["post_list_page"].object_list, Post.objects.none()
+        )
+
     def test_フィルタ_期間(self):
         posts = [
             Post(
@@ -276,41 +288,76 @@ class SearchViewTests(TestCase):
                 body=f"post_{i}_body",
                 user=self.users[0],
                 is_published=True,
-                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i))
+                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i)),
             )
             for i in range(10)
         ]
         Post.objects.bulk_create(posts)
 
         c = Client()
-        start_date = (self.today_datetime.date() + datetime.timedelta(days=(-7))).strftime(self.date_format)
+        start_date = (
+            self.today_datetime.date() + datetime.timedelta(days=(-7))
+        ).strftime(self.date_format)
         response = c.get(self.url_path, {"period_start_date": start_date})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[0:8])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), posts[0:8]
+        )
 
-        end_date = (self.today_datetime.date() + datetime.timedelta(days=(-2))).strftime(self.date_format)
+        end_date = (
+            self.today_datetime.date() + datetime.timedelta(days=(-2))
+        ).strftime(self.date_format)
         response = c.get(self.url_path, {"period_end_date": end_date})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[2:])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), posts[2:]
+        )
 
-        start_date = (self.today_datetime.date() + datetime.timedelta(days=(-7))).strftime(self.date_format)
-        end_date = (self.today_datetime.date() + datetime.timedelta(days=(-2))).strftime(self.date_format)
-        response = c.get(self.url_path, {"period_start_date": start_date, "period_end_date": end_date})
+        start_date = (
+            self.today_datetime.date() + datetime.timedelta(days=(-7))
+        ).strftime(self.date_format)
+        end_date = (
+            self.today_datetime.date() + datetime.timedelta(days=(-2))
+        ).strftime(self.date_format)
+        response = c.get(
+            self.url_path,
+            {"period_start_date": start_date, "period_end_date": end_date},
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[2:8])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), posts[2:8]
+        )
 
-        start_date = (self.today_datetime.date() + datetime.timedelta(days=(-5))).strftime(self.date_format)
-        end_date = (self.today_datetime.date() + datetime.timedelta(days=(-5))).strftime(self.date_format)
-        response = c.get(self.url_path, {"period_start_date": start_date, "period_end_date": end_date})
+        start_date = (
+            self.today_datetime.date() + datetime.timedelta(days=(-5))
+        ).strftime(self.date_format)
+        end_date = (
+            self.today_datetime.date() + datetime.timedelta(days=(-5))
+        ).strftime(self.date_format)
+        response = c.get(
+            self.url_path,
+            {"period_start_date": start_date, "period_end_date": end_date},
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[5]])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), [posts[5]]
+        )
 
-        start_date = (self.today_datetime.date() + datetime.timedelta(days=(-2))).strftime(self.date_format)
-        end_date = (self.today_datetime.date() + datetime.timedelta(days=(-7))).strftime(self.date_format)
-        response = c.get(self.url_path, {"period_start_date": start_date, "period_end_date": end_date})
+        start_date = (
+            self.today_datetime.date() + datetime.timedelta(days=(-2))
+        ).strftime(self.date_format)
+        end_date = (
+            self.today_datetime.date() + datetime.timedelta(days=(-7))
+        ).strftime(self.date_format)
+        response = c.get(
+            self.url_path,
+            {"period_start_date": start_date, "period_end_date": end_date},
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(response.context["post_list_page"].object_list, Post.objects.none())
-    
+        self.assertQuerysetEqual(
+            response.context["post_list_page"].object_list, Post.objects.none()
+        )
+
     def test_フィルタ_キーワード(self):
         posts = [
             Post(
@@ -318,7 +365,7 @@ class SearchViewTests(TestCase):
                 body=f"post_{i}_body_本文",
                 user=self.users[0],
                 is_published=True,
-                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i))
+                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i)),
             )
             for i in range(10)
         ]
@@ -327,27 +374,39 @@ class SearchViewTests(TestCase):
         c = Client()
         response = c.get(self.url_path, {"keyword": "post_5_タイトル"})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[5]])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), [posts[5]]
+        )
 
         response = c.get(self.url_path, {"keyword": "_5_タイ"})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[5]])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), [posts[5]]
+        )
 
         response = c.get(self.url_path, {"keyword": "post_5_body_本文"})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[5]])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), [posts[5]]
+        )
 
         response = c.get(self.url_path, {"keyword": "_5_body_本"})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[5]])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), [posts[5]]
+        )
 
         response = c.get(self.url_path, {"keyword": "_5_"})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[5]])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), [posts[5]]
+        )
 
         response = c.get(self.url_path, {"keyword": "post_"})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), posts)
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), posts
+        )
 
     def test_フィルタ_並び順(self):
         posts = [
@@ -356,7 +415,7 @@ class SearchViewTests(TestCase):
                 body=f"post_{i}_body_本文",
                 user=self.users[0],
                 is_published=True,
-                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i))
+                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i)),
             )
             for i in range(10)
         ]
@@ -365,15 +424,21 @@ class SearchViewTests(TestCase):
         c = Client()
         response = c.get(self.url_path)
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), posts)
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), posts
+        )
 
         response = c.get(self.url_path, {"sort": "date_publish_desc"})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), posts)
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), posts
+        )
 
         response = c.get(self.url_path, {"sort": "date_publish_asc"})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), list(reversed(posts)))
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), list(reversed(posts))
+        )
 
     def test_ページネーション(self):
         posts = [
@@ -382,7 +447,7 @@ class SearchViewTests(TestCase):
                 body=f"post_{i}_body_本文",
                 user=self.users[0],
                 is_published=True,
-                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i))
+                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i)),
             )
             for i in range(21)
         ]
@@ -391,30 +456,42 @@ class SearchViewTests(TestCase):
         c = Client()
         response = c.get(self.url_path)
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[0:10])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), posts[0:10]
+        )
 
         response = c.get(self.url_path, {"page": 1})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[0:10])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), posts[0:10]
+        )
 
         response = c.get(self.url_path, {"page": 2})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[10:20])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), posts[10:20]
+        )
 
         response = c.get(self.url_path, {"page": 3})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[20]])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), [posts[20]]
+        )
 
         response = c.get(self.url_path, {"page": 4})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[20]])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), [posts[20]]
+        )
         self.assertEqual(response.context["post_list_page"].number, 3)
 
         response = c.get(self.url_path, {"page": 0})
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), [posts[20]])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), [posts[20]]
+        )
         self.assertEqual(response.context["post_list_page"].number, 3)
-    
+
     def test_公開中の投稿のみが表示される(self):
         posts = [
             Post(
@@ -422,7 +499,7 @@ class SearchViewTests(TestCase):
                 body=f"post_{i}_body_本文",
                 user=self.users[0],
                 is_published=True,
-                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i))
+                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i)),
             )
             for i in range(0, 5)
         ]
@@ -432,7 +509,7 @@ class SearchViewTests(TestCase):
                 body=f"post_{i}_body_本文",
                 user=self.users[0],
                 is_published=False,
-                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i))
+                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i)),
             )
             for i in range(5, 10)
         ]
@@ -441,7 +518,9 @@ class SearchViewTests(TestCase):
         c = Client()
         response = c.get(self.url_path)
         self.assertEqual(response.status_code, 200)
-        self.assertListEqual(list(response.context["post_list_page"].object_list), posts[0:5])
+        self.assertListEqual(
+            list(response.context["post_list_page"].object_list), posts[0:5]
+        )
 
     def test_ページネーション_ナビゲーション(self):
         """
@@ -453,7 +532,7 @@ class SearchViewTests(TestCase):
                 body=f"post_{i}_body_本文",
                 user=self.users[0],
                 is_published=True,
-                date_publish=self.today_datetime.date()
+                date_publish=self.today_datetime.date(),
             )
             for i in range(0, 10)
         ]
@@ -462,21 +541,13 @@ class SearchViewTests(TestCase):
 
         # 投稿無し
         response = c.get(self.url_path, {"paginate_by": 1})
-        context = {
-            "numbers": [1],
-            "display_first": False,
-            "display_last": False
-        }
+        context = {"numbers": [1], "display_first": False, "display_last": False}
         self.assertDictEqual(response.context["post_list_pagination_nav"], context)
 
         # ページ数が1ページのみ
         Post.objects.bulk_create([posts[0]])
         response = c.get(self.url_path, {"paginate_by": 1})
-        context = {
-            "numbers": [1],
-            "display_first": False,
-            "display_last": False
-        }
+        context = {"numbers": [1], "display_first": False, "display_last": False}
         self.assertDictEqual(response.context["post_list_pagination_nav"], context)
 
         # ページ数が4
@@ -486,7 +557,7 @@ class SearchViewTests(TestCase):
             context = {
                 "numbers": [1, 2, 3, 4],
                 "display_first": False,
-                "display_last": False
+                "display_last": False,
             }
             self.assertDictEqual(response.context["post_list_pagination_nav"], context)
 
@@ -497,7 +568,7 @@ class SearchViewTests(TestCase):
             context = {
                 "numbers": [1, 2, 3, 4, 5],
                 "display_first": False,
-                "display_last": False
+                "display_last": False,
             }
             self.assertDictEqual(response.context["post_list_pagination_nav"], context)
 
@@ -509,7 +580,7 @@ class SearchViewTests(TestCase):
             context = {
                 "numbers": [1, 2, 3, 4],
                 "display_first": False,
-                "display_last": True
+                "display_last": True,
             }
             self.assertDictEqual(response.context["post_list_pagination_nav"], context)
         # 4 ~ 6ページ目
@@ -518,7 +589,7 @@ class SearchViewTests(TestCase):
             context = {
                 "numbers": [3, 4, 5, 6],
                 "display_first": True,
-                "display_last": False
+                "display_last": False,
             }
             self.assertDictEqual(response.context["post_list_pagination_nav"], context)
 
@@ -530,7 +601,7 @@ class SearchViewTests(TestCase):
             context = {
                 "numbers": [1, 2, 3, 4],
                 "display_first": False,
-                "display_last": True
+                "display_last": True,
             }
             self.assertDictEqual(response.context["post_list_pagination_nav"], context)
         # 4 ~ 7 ページ目まで
@@ -539,7 +610,7 @@ class SearchViewTests(TestCase):
             context = {
                 "numbers": [i - 1, i, i + 1],
                 "display_first": True,
-                "display_last": True
+                "display_last": True,
             }
             self.assertDictEqual(response.context["post_list_pagination_nav"], context)
         # 8 ~ 10 ページ目まで
@@ -548,7 +619,7 @@ class SearchViewTests(TestCase):
             context = {
                 "numbers": [7, 8, 9, 10],
                 "display_first": True,
-                "display_last": False
+                "display_last": False,
             }
             self.assertDictEqual(response.context["post_list_pagination_nav"], context)
 
@@ -556,6 +627,7 @@ class SearchViewTests(TestCase):
 class SearchTagsViewTests(TestCase):
     def setUp(self):
         self.url_path = reverse_lazy("search_tags")
+
     def test_タグ検索(self):
         tags = [Tag(name=f"tag_{i}_タグ{i}") for i in range(20)]
         tags = Tag.objects.bulk_create(tags)
