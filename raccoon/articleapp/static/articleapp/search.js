@@ -205,10 +205,10 @@
                 }
             }
 
-            const SEARCH_URL = $('#tag_search_text').data("url");
+            const SEARCH_URL = FILTER_FORM.find('#tag_search_text').data("url");
 
             // 送信前に隠しフィールドでタグを送信する
-            $('#filter_form').submit((e) => {
+            FILTER_FORM.submit((e) => {
                 // バックエンドに以下の形式で配列のパラメータを送信する
                 // ?tags=value1&tags=value2 => [value1, value2]
                 CONTEXT["tags_filter"].forEach((tag) => {
@@ -222,7 +222,7 @@
             });
 
             function updateTagsSourceView() {
-                const tag_search_list = $('#tag_search_list');
+                const tag_search_list = FILTER_FORM.find('#tag_search_list');
                 tag_search_list.empty();
                 CONTEXT["tags_source"].forEach((tag) => {
                     let li = $('<li>');
@@ -251,7 +251,7 @@
             }
 
             function updateTagsFilterView() {
-                const tag_filter_list = $('#tag_filter_list');
+                const tag_filter_list = FILTER_FORM.find('#tag_filter_list');
                 tag_filter_list.empty();
                 CONTEXT["tags_filter"].forEach((tag) => {
                     let li = $('<li>', { 'class': 'tag_filter_item' });
@@ -320,7 +320,7 @@
                 }
             }
 
-            $('#tag_search_text').on('input', (e) => {
+            FILTER_FORM.find('#tag_search_text').on('input', (e) => {
                 // 変換中は何もしない。ただし、以下のフラグで変換終了時も検索処理を行わなくなる。
                 if (e.originalEvent.isComposing) {
                     return;
@@ -331,12 +331,12 @@
 
             // 変換開始時に入力欄のテキストを保持しておく
             let text_before_compositionstart = '';
-            $('#tag_search_text').on('compositionstart', (e) => {
+            FILTER_FORM.find('#tag_search_text').on('compositionstart', (e) => {
                 text_before_compositionstart = e.target.value;
             });
 
             // 変換終了時に別途検索処理を行う。
-            $('#tag_search_text').on('compositionend', (e) => {
+            FILTER_FORM.find('#tag_search_text').on('compositionend', (e) => {
                 // 変換完了時に変換開始時から変化が無ければ何もしない。
                 if (text_before_compositionstart === e.target.value) {
                     return;
