@@ -152,9 +152,9 @@ class IndexViewTests(TestCase):
         tags = [Tag(name=f"tag_{i + 1}") for i in range(self.number_of_tags + 10)]
         Tag.objects.bulk_create(tags)
 
-        # 全てのタグを何らかの記事に紐づけておく。
+        # 全てのタグを公開中の記事に紐づけておく。
         for tag in tags:
-            random.choice(posts).tags.add(tag)
+            posts[0].tags.add(tag)
 
         c = Client()
         response = c.get(reverse("index"))
@@ -190,6 +190,27 @@ class IndexViewTests(TestCase):
         response = c.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(list(response.context["posts"]), [posts[0]])
+        self.assertEqual(list(response.context["tags"]), [tags[0]])
+
+    def test_タグが重複して表示されないこと(self):
+        user = User.objects.create_user(username="testuser", password="testuser")
+        tags = [Tag(name=f"tag_{i}") for i in range(3)]
+        Tag.objects.bulk_create(tags)
+        posts = [
+            Post(
+                title=f"post_{i}",
+                body=f"post_{i}_body",
+                user=user,
+                is_published=True,
+                date_publish=self.today_datetime.date(),
+            )
+            for i in range(self.number_of_posts)
+        ]
+        Post.objects.bulk_create(posts)
+        for post in posts:
+            post.tags.add(tags[0])
+        c = Client()
+        response = c.get(reverse("index"))
         self.assertEqual(list(response.context["tags"]), [tags[0]])
 
 

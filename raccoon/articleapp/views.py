@@ -1,4 +1,5 @@
 import datetime
+import random
 
 from django.core.paginator import Paginator
 from django.db.models import Count, Q
@@ -12,17 +13,23 @@ from .models import Post, Tag
 # Create your views here.
 def index(request):
     # tagをランダムに10個取得
-    # order_by("?")でランダムに並べ替え
-    tags = (
-        Tag.objects.filter(post__isnull=False)  # 少なくとも1つ以上の投稿があるタグのみにする
-        .filter(post__is_published=True)  # 少なくとも1つ以上の投稿が公開されているタグのみにする
-        .order_by("?")[0:10]
+    tags = list(
+        Tag.objects.filter(
+            # 少なくとも1つ以上の投稿が公開されているタグのみにする
+            post__is_published__exact=True
+        ).distinct()  # 重複を除外
     )
+    tags_sample = []
+    random_indexes = random.sample(range(len(tags)), min([10, len(tags)]))
+    for index in random_indexes:
+        tags_sample.append(tags[index])
 
     # Postの新着5件を取得
     posts = Post.objects.filter(is_published=True).order_by("-date_publish")[0:5]
 
-    return render(request, "articleapp/index.html", {"posts": posts, "tags": tags})
+    return render(
+        request, "articleapp/index.html", {"posts": posts, "tags": tags_sample}
+    )
 
 
 def search(request):
