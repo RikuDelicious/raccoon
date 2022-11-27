@@ -677,6 +677,7 @@ class PostDetailViewTests(TestCase):
         self.today_datetime = timezone.now()
         self.users = [
             User.objects.create_user(username="testuser_1", password="testuser_1"),
+            User.objects.create_user(username="testuser_2", password="testuser_2"),
         ]
 
     def test_存在する公開中の投稿にアクセス(self):
@@ -701,7 +702,7 @@ class PostDetailViewTests(TestCase):
         self.assertQuerysetEqual(response.context["other_posts"], Post.objects.none())
 
     def test_存在する下書き中の投稿にアクセス(self):
-        post = Post.objects.create(
+        Post.objects.create(
             title="post_0_tite",
             body="post_0_body",
             user=self.users[0],
@@ -714,6 +715,32 @@ class PostDetailViewTests(TestCase):
             reverse(
                 "post_detail",
                 kwargs={"username": self.users[0].username, "slug": "post_0_slug"},
+            )
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_存在するユーザーの存在しない投稿にアクセス(self):
+        Post.objects.create(
+            title="post_0_tite",
+            body="post_0_body",
+            user=self.users[0],
+            slug="post_0_slug",
+            is_published=True,
+            date_publish=self.today_datetime.date(),
+        )
+        Post.objects.create(
+            title="post_1_tite",
+            body="post_1_body",
+            user=self.users[1],
+            slug="post_1_slug",
+            is_published=True,
+            date_publish=self.today_datetime.date(),
+        )
+        c = Client()
+        response = c.get(
+            reverse(
+                "post_detail",
+                kwargs={"username": self.users[1].username, "slug": "post_0_slug"},
             )
         )
         self.assertEqual(response.status_code, 404)
