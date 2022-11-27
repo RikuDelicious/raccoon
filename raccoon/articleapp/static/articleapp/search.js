@@ -387,19 +387,20 @@
                 }
             }
         }
-    });
 
-    // 検索ボタンの送信イベント
-    // 及び、キーワード入力フォームエンター時の送信イベントをここで実装する
-    $(() => {
-        $('#search_button').click((e) => {
-            $('#filter_form').submit();
-        });
 
-        $('input[name=keyword]').keydown((e) => {
-            if (e.which === 13) {
+        // 検索ボタンの送信イベント
+        // 及び、キーワード入力フォームエンター時の送信イベントをここで実装する
+        {
+            $('#search_button').click((e) => {
                 $('#filter_form').submit();
-            }
-        });
+            });
+    
+            $('input[name=keyword]').keydown((e) => {
+                if (e.which === 13) {
+                    $('#filter_form').submit();
+                }
+            });
+        }
     });
 }
