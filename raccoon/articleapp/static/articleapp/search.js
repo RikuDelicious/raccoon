@@ -37,17 +37,17 @@
             };
     
             // フィルター表示部分の要素
-            const period_filter_start = $('#period_filter_start');
-            const period_filter_end = $('#period_filter_end');
+            const period_filter_start = FILTER_FORM.find('#period_filter_start');
+            const period_filter_end = FILTER_FORM.find('#period_filter_end');
     
             // 「期間」入力欄の要素
-            const period_start_date = $('#period_start_date');
-            const period_start_date_label = $('label[for=period_start_date]');
-            const period_end_date = $('#period_end_date');
-            const period_end_date_label = $('label[for=period_end_date]');
+            const period_start_date = FILTER_FORM.find('#period_start_date');
+            const period_start_date_label = FILTER_FORM.find('label[for=period_start_date]');
+            const period_end_date = FILTER_FORM.find('#period_end_date');
+            const period_end_date_label = FILTER_FORM.find('label[for=period_end_date]');
     
             // 送信前に隠しフィールドに値をセットする
-            $('#filter_form').submit((e) => {
+            FILTER_FORM.submit((e) => {
                 if (CONTEXT["period_start_date"] !== null) {
                     let start_date = CONTEXT["period_start_date"].getFullYear()
                         + '-' + (CONTEXT["period_start_date"].getMonth() + 1).toString().padStart(2, '0')
@@ -103,10 +103,10 @@
                     CONTEXT['period_end_date'] = new Date(end_date);
                 }
             }
-    
-            $('input[name=period]').change((e) => {
+
+            FILTER_FORM.find('input[name=period]').change((e) => {
                 const today = new Date();
-                const value = $('input[name=period]:checked').val();
+                const value = FILTER_FORM.find('input[name=period]:checked').val();
     
                 // value === 'period_unspecified'の場合は期間指定なしになる
                 CONTEXT['period_start_date'] = null;
@@ -151,7 +151,7 @@
                 updateFilterHeader();
             });
     
-            $('#period_start_date, #period_end_date').on('input', (e) => {
+            FILTER_FORM.find('#period_start_date, #period_end_date').on('input', (e) => {
                 CONTEXT['period_start_date'] = null;
                 CONTEXT['period_end_date'] = null;
                 specify_period();
@@ -166,17 +166,17 @@
                 const param_period = params.get('period');
                 const period_values = ['specify_period', 'today', 'thisweek', 'thismonth', 'thisyear'];
                 if (param_period !== null && period_values.includes(param_period) ) {
-                    $('input[name=period]').val([param_period]);
-                    $('input[name=period]').change();
+                    FILTER_FORM.find('input[name=period]').val([param_period]);
+                    FILTER_FORM.find('input[name=period]').change();
                     if (param_period === 'specify_period') {
                         if (params.get('period_start_date') !== null) {
-                            $('#period_start_date').val(params.get('period_start_date'))
-                            $('#period_start_date').trigger('input');
+                            FILTER_FORM.find('#period_start_date').val(params.get('period_start_date'))
+                            FILTER_FORM.find('#period_start_date').trigger('input');
                         }
     
                         if (params.get('period_end_date') !== null) {
-                            $('#period_end_date').val(params.get('period_end_date'))
-                            $('#period_end_date').trigger('input');
+                            FILTER_FORM.find('#period_end_date').val(params.get('period_end_date'))
+                            FILTER_FORM.find('#period_end_date').trigger('input');
                         }
                     }
                 }
