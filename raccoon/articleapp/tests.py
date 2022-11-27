@@ -443,10 +443,111 @@ class SearchViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertListEqual(list(response.context["post_list_page"].object_list), posts[0:5])
 
+    def test_ページネーション_ナビゲーション(self):
+        """
+        ページネーションのナビゲーションに表示するページ番号を決めるロジックのテスト
+        """
+        posts = [
+            Post(
+                title=f"post_{i}_タイトル",
+                body=f"post_{i}_body_本文",
+                user=self.users[0],
+                is_published=True,
+                date_publish=self.today_datetime.date()
+            )
+            for i in range(0, 10)
+        ]
 
+        c = Client()
 
-        
+        # 投稿無し
+        response = c.get(self.url_path, {"paginate_by": 1})
+        context = {
+            "numbers": [1],
+            "display_first": False,
+            "display_last": False
+        }
+        self.assertDictEqual(response.context["post_list_pagination_nav"], context)
 
+        # ページ数が1ページのみ
+        Post.objects.bulk_create([posts[0]])
+        response = c.get(self.url_path, {"paginate_by": 1})
+        context = {
+            "numbers": [1],
+            "display_first": False,
+            "display_last": False
+        }
+        self.assertDictEqual(response.context["post_list_pagination_nav"], context)
 
+        # ページ数が4
+        Post.objects.bulk_create(posts[1:4])
+        for i in range(1, 5):
+            response = c.get(self.url_path, {"paginate_by": 1, "page": i})
+            context = {
+                "numbers": [1, 2, 3, 4],
+                "display_first": False,
+                "display_last": False
+            }
+            self.assertDictEqual(response.context["post_list_pagination_nav"], context)
 
+        # ページ数が5
+        Post.objects.bulk_create([posts[4]])
+        for i in range(1, 6):
+            response = c.get(self.url_path, {"paginate_by": 1, "page": i})
+            context = {
+                "numbers": [1, 2, 3, 4, 5],
+                "display_first": False,
+                "display_last": False
+            }
+            self.assertDictEqual(response.context["post_list_pagination_nav"], context)
 
+        # ページ数が6
+        Post.objects.bulk_create([posts[5]])
+        # 1 ~ 3 ページ目まで
+        for i in range(1, 4):
+            response = c.get(self.url_path, {"paginate_by": 1, "page": i})
+            context = {
+                "numbers": [1, 2, 3, 4],
+                "display_first": False,
+                "display_last": True
+            }
+            self.assertDictEqual(response.context["post_list_pagination_nav"], context)
+        # 4 ~ 6ページ目
+        for i in range(4, 6):
+            response = c.get(self.url_path, {"paginate_by": 1, "page": i})
+            context = {
+                "numbers": [3, 4, 5, 6],
+                "display_first": True,
+                "display_last": False
+            }
+            self.assertDictEqual(response.context["post_list_pagination_nav"], context)
+
+        # ページ数が10
+        Post.objects.bulk_create(posts[6:10])
+        # 1 ~ 3 ページ目まで
+        for i in range(1, 4):
+            response = c.get(self.url_path, {"paginate_by": 1, "page": i})
+            context = {
+                "numbers": [1, 2, 3, 4],
+                "display_first": False,
+                "display_last": True
+            }
+            self.assertDictEqual(response.context["post_list_pagination_nav"], context)
+        # 4 ~ 7 ページ目まで
+        for i in range(4, 8):
+            response = c.get(self.url_path, {"paginate_by": 1, "page": i})
+            context = {
+                "numbers": [i - 1, i, i + 1],
+                "display_first": True,
+                "display_last": True
+            }
+            self.assertDictEqual(response.context["post_list_pagination_nav"], context)
+        # 8 ~ 10 ページ目まで
+        for i in range(8, 11):
+            response = c.get(self.url_path, {"paginate_by": 1, "page": i})
+            context = {
+                "numbers": [7, 8, 9, 10],
+                "display_first": True,
+                "display_last": False
+            }
+            self.assertDictEqual(response.context["post_list_pagination_nav"], context)
