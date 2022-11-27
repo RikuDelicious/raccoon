@@ -670,3 +670,50 @@ class SearchTagsViewTests(TestCase):
         # 部分一致
         response = c.get(self.url_path, {"keyword": "ag_1"})
         self.assertListEqual(response.json()["tags"], [tags[1]] + tags[10:20])
+
+
+class PostDetailViewTests(TestCase):
+    def setUp(self):
+        self.today_datetime = timezone.now()
+        self.users = [
+            User.objects.create_user(username="testuser_1", password="testuser_1"),
+        ]
+
+    def test_存在する公開中の投稿にアクセス(self):
+        post = Post.objects.create(
+            title="post_0_tite",
+            body="post_0_body",
+            user=self.users[0],
+            slug="post_0_slug",
+            is_published=True,
+            date_publish=self.today_datetime.date(),
+        )
+        c = Client()
+        response = c.get(
+            reverse(
+                "post_detail",
+                kwargs={"username": self.users[0].username, "slug": "post_0_slug"},
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["post"], post)
+        self.assertEqual(response.context["post_user"], self.users[0])
+        self.assertQuerysetEqual(response.context["other_posts"], Post.objects.none())
+
+    def test_存在する下書き中の投稿にアクセス(self):
+        post = Post.objects.create(
+            title="post_0_tite",
+            body="post_0_body",
+            user=self.users[0],
+            slug="post_0_slug",
+            is_published=False,
+            date_publish=self.today_datetime.date(),
+        )
+        c = Client()
+        response = c.get(
+            reverse(
+                "post_detail",
+                kwargs={"username": self.users[0].username, "slug": "post_0_slug"},
+            )
+        )
+        self.assertEqual(response.status_code, 404)
