@@ -26,6 +26,9 @@ class Post(models.Model):
 
     class Meta:
         ordering = ["-date_publish", "created_at"]
+        constraints = [
+            models.UniqueConstraint(fields=["user", "slug"], name="unique_user_slug"),
+        ]
 
     def __str__(self):
         return self.title
