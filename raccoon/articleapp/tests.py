@@ -762,3 +762,53 @@ class PostDetailViewTests(TestCase):
             )
         )
         self.assertEqual(response.status_code, 404)
+
+    def test_投稿ユーザーの他の投稿を表示(self):
+        posts = [
+            Post(
+                title=f"post_{i}_tite",
+                body=f"post_{i}_body",
+                user=self.users[0],
+                slug=f"post_{i}_slug",
+                is_published=True,
+                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i)),
+            )
+            for i in range(0, 2)
+        ]
+        posts += [
+            Post(
+                title=f"post_{i}_tite",
+                body=f"post_{i}_body",
+                user=self.users[0],
+                slug=f"post_{i}_slug",
+                is_published=False,
+                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i)),
+            )
+            for i in range(2, 4)
+        ]
+        posts += [
+            Post(
+                title=f"post_{i}_tite",
+                body=f"post_{i}_body",
+                user=self.users[0],
+                slug=f"post_{i}_slug",
+                is_published=True,
+                date_publish=(self.today_datetime.date() - datetime.timedelta(days=i)),
+            )
+            for i in range(4, 10)
+        ]
+        Post.objects.bulk_create(posts)
+
+        c = Client()
+        response = c.get(
+            reverse(
+                "post_detail",
+                kwargs={"username": self.users[0].username, "slug": "post_7_slug"},
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["post"], posts[7])
+        self.assertEqual(response.context["post_user"], self.users[0])
+        self.assertListEqual(
+            list(response.context["other_posts"]), posts[0:2] + posts[4:7]
+        )
