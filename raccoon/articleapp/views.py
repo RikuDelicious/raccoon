@@ -97,7 +97,7 @@ def search(request):
     paginate_by = 10
     if "paginate_by" in querydict:
         try:
-            paginate_by = int(queryset["paginate_by"])
+            paginate_by = int(querydict["paginate_by"])
         except ValueError:
             pass
 
