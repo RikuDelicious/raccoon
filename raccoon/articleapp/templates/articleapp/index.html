@@ -13,7 +13,7 @@
     <h2 class="text-3xl font-bold text-[#E6E6E6]">Random Tags</h2>
     <div class="max-w-[400px] mx-auto">
         {% for tag in tags %}
-        <a href="{% url 'search' %}?tags={{ tag.name }}&title={{ tag.name }}"
+        <a href="{% url 'search' %}?tags={{ tag.name|urlencode }}&title={{ tag.name|urlencode }}"
             class="text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA] mr-2 whitespace-nowrap">
             # {{ tag.name }}
         </a>
