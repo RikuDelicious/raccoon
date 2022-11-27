@@ -4,10 +4,10 @@ import random
 from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 
-from .models import Post, Tag
+from .models import Post, Tag, User
 
 
 # Create your views here.
@@ -163,3 +163,13 @@ def search_tags(request):
         tags = tags.filter(name__icontains=keyword)
     data = {"tags": list(tags.values())}
     return JsonResponse(data)
+
+
+def post_detail(request, username, slug):
+    user = get_object_or_404(
+        User, username=username, is_staff=False, is_superuser=False
+    )
+    post = get_object_or_404(Post, user=user, slug=slug)
+    other_posts = Post.objects.filter(user=user)[0:5]
+    context = {"post": post, "post_user": user, "other_posts": other_posts}
+    return render(request, "articleapp/post_detail.html", context)
