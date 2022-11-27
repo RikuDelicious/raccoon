@@ -392,13 +392,13 @@
         // 検索ボタンの送信イベント
         // 及び、キーワード入力フォームエンター時の送信イベントをここで実装する
         {
-            $('#search_button').click((e) => {
-                $('#filter_form').submit();
+            FILTER_FORM.find('#search_button').click((e) => {
+                FILTER_FORM.submit();
             });
-    
-            $('input[name=keyword]').keydown((e) => {
+            
+            FILTER_FORM.find('input[name=keyword]').keydown((e) => {
                 if (e.which === 13) {
-                    $('#filter_form').submit();
+                    FILTER_FORM.submit();
                 }
             });
         }
