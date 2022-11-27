@@ -16,7 +16,7 @@
                 <a href="{% url 'index' %}" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA]">トップ</a>
             </div>
             <div class="basis-[500px] mx-3">
-                <form action="" method="get">
+                <form action="{% url 'search' %}" method="get">
                     <input type="text" placeholder="記事を検索" name="keyword"
                         class="w-full bg-transparent border-[#D2D2D2] focus:border-[#D2D2D2] rounded-md text-[#E6E6E6]">
                 </form>
