@@ -1,12 +1,14 @@
 import datetime
 import random
 
+from django.contrib.auth import login
 from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
+from .forms import UserCreationForm
 from .models import Post, Tag, User
 
 
@@ -177,3 +179,17 @@ def post_detail(request, username, slug):
     )
     context = {"post": post, "post_user": user, "other_posts": other_posts}
     return render(request, "articleapp/post_detail.html", context)
+
+
+def signup(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.GET)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("index")
+        else:
+            return render(request, "articleapp/signup.html", {"form": form})
+    else:
+        form = UserCreationForm()
+        return render(request, "articleapp/signup.html", {"form": form})
