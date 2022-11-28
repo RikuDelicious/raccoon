@@ -19,7 +19,7 @@ def generate_random_slug():
 class User(AbstractUser):
     display_name = models.CharField(max_length=100, null=True)
 
-    username_validator = ASCIIUsernameValidator
+    username_validator = ASCIIUsernameValidator()
     username = models.CharField(
         _("username"),
         max_length=150,
