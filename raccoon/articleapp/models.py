@@ -1,7 +1,9 @@
+import random
+import string
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
-import random, string
 
 
 def generate_random_slug():
