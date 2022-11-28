@@ -1,6 +1,16 @@
+import random
+import string
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
+
+
+def generate_random_slug():
+    seed = string.ascii_lowercase + string.digits
+    random_chars = random.choices(seed, k=16)
+    return "".join(random_chars)
 
 
 # Create your models here.
@@ -12,6 +22,7 @@ class Post(models.Model):
     title = models.CharField(max_length=200)
     body = models.TextField()
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    slug = models.SlugField(default=generate_random_slug)
     tags = models.ManyToManyField(to="Tag", blank=True)
     is_published = models.BooleanField(default=False)
     date_publish = models.DateField(null=True)
@@ -20,6 +31,9 @@ class Post(models.Model):
 
     class Meta:
         ordering = ["-date_publish", "created_at"]
+        constraints = [
+            models.UniqueConstraint(fields=["user", "slug"], name="unique_user_slug"),
+        ]
 
     def __str__(self):
         return self.title
@@ -34,6 +48,12 @@ class Post(models.Model):
         self.date_publish = timezone.now().date()
         self.save()
 
+    def get_absolute_url(self):
+        return reverse("post_detail", kwargs={"username": self.user, "slug": self.slug})
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
