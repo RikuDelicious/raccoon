@@ -21,9 +21,9 @@ class UserAdmin(BaseUserAdmin):
             "password",
         )
 
-        # スタッフ・スーパーユーザー以外はdisplay_nameを表示する
+        # スタッフ・スーパーユーザー以外はdisplay_name, profile_imageを表示する
         if not (obj.is_staff or obj.is_superuser):
-            fields_top += ("display_name",)
+            fields_top += ("display_name", "profile_image")
 
         fieldsets = (
             (None, {"fields": fields_top}),
