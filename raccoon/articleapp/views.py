@@ -192,7 +192,7 @@ def signup(request):
             login(request, user)
             return redirect("index")
         else:
-            return render(request, "articleapp/signup.html", {"form": form})
+            return render(request, "articleapp/signup.html", {"form": form}, status=400)
     else:
         form = UserCreationForm()
         return render(request, "articleapp/signup.html", {"form": form})
