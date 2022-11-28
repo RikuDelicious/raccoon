@@ -6,7 +6,7 @@
     <div>
         {% if request.user.is_authenticated %}
         {% else %}
-            <a href="" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA]">
+            <a href="{% url 'login' %}" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA]">
                 ログイン
             </a>
             <span class="text-[#5D5C5C]"> / </span>
