@@ -127,3 +127,6 @@ AUTH_USER_MODEL = "articleapp.User"
 TAILWIND_APP_NAME = "theme"
 
 INTERNAL_IPS = ["127.0.0.1"]
+
+# ユーザーアップロードファイルの設定
+MEDIA_URL = "media/"
