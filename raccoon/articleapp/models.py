@@ -3,6 +3,7 @@ import string
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 
 
@@ -46,6 +47,9 @@ class Post(models.Model):
         self.is_published = True
         self.date_publish = timezone.now().date()
         self.save()
+
+    def get_absolute_url(self):
+        return reverse("post_detail", kwargs={"username": self.user, "slug": self.slug})
 
 
 class Tag(models.Model):

@@ -41,6 +41,21 @@ class PostTests(TestCase):
         self.assertEqual(post.is_published, True)
         self.assertEqual(post.date_publish, date_publish)
 
+    def test_get_absolute_urlメソッド(self):
+        user = User.objects.create_user(username="testuser", password="testuser")
+        post = Post.objects.create(
+            title="タイトル",
+            body="本文",
+            user=user,
+            is_published=True,
+            date_publish=self.today_datetime.date(),
+        )
+
+        url = post.get_absolute_url()
+        c = Client()
+        response = c.get(url)
+        self.assertEqual(response.status_code, 200)
+
 
 class IndexViewTests(TestCase):
     def setUp(self):
