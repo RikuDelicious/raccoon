@@ -12,7 +12,9 @@ urlpatterns = [
     path(
         "login/",
         LoginView.as_view(
-            template_name="articleapp/login.html", next_page=reverse_lazy("index")
+            template_name="articleapp/login.html",
+            next_page=reverse_lazy("index"),
+            redirect_authenticated_user=True,
         ),
         name="login",
     ),
