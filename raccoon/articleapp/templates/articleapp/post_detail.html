@@ -56,7 +56,8 @@
         {% endfor %}
     </ul>
     <p>
-        <a href="" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA]">
+        <a href="{% url 'user_home' username=post.user.username %}"
+            class="text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA]">
             {% if post_user.display_name %}
                 {{ post_user.display_name }}
             {% endif %}
