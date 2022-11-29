@@ -22,6 +22,7 @@ urlpatterns = [
     ),
     # ユーザー関連ページ（先頭が任意のユーザー名のため末尾にまとめる）
     path("<str:username>/home/", views.user_home, name="user_home"),
+    path("<str:username>/home/drafts/", views.user_home, name="user_home_drafts", kwargs={"drafts": True}),
     path("<str:username>/posts/<slug:slug>/", views.post_detail, name="post_detail"),
 ]
 

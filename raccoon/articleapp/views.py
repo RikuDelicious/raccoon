@@ -199,7 +199,7 @@ def signup(request):
         return render(request, "articleapp/signup.html", {"form": form})
 
 
-def user_home(request, username):
+def user_home(request, username, drafts=False):
     querydict = request.GET
     context = {}
 
@@ -211,9 +211,19 @@ def user_home(request, username):
     context["is_logged_in_user_home"] = False
     if request.user.is_authenticated and request.user == user_to_display:
         context["is_logged_in_user_home"] = True
-
-    # ユーザーの投稿取得
+    
+    # ユーザーの公開中の投稿取得
     posts = Post.objects.filter(user=user_to_display, is_published=True)
+    
+    # 下書き一覧がリクエストされ、かつログイン中のユーザーであれば、下書きを取得する
+    if drafts:
+        if request.user.is_authenticated and request.user == user_to_display:
+            posts = Post.objects.filter(user=user_to_display, is_published=False)
+            # コンテキストで下書き一覧であることのフラグを保持
+            context["drafts"] = True
+        else:
+            # ログイン中のユーザーでなければ通常のユーザーページにリダイレクトする
+            return redirect("user_home", username=username)
 
     # ページネーション
     # ページネーター作成
