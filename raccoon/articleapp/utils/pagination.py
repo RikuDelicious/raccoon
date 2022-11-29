@@ -4,7 +4,7 @@ def create_navigation_context_from_page(page):
 
     Args:
         page (django.core.paginator.Page): 基準となるページ
-    
+
     Returns:
         dict: 表示する番号一覧及び最初・最後の番号の表示有無
             {
