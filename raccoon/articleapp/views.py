@@ -207,6 +207,11 @@ def user_home(request, username):
     user_to_display = get_object_or_404(User, username=username)
     context["user_to_display"] = user_to_display
 
+    # ログイン中のユーザーのページであるかどうかをコンテキストに保持する
+    context["is_logged_in_user_home"] = False
+    if request.user.is_authenticated and request.user == user_to_display:
+        context["is_logged_in_user_home"] = True
+
     # ユーザーの投稿取得
     posts = Post.objects.filter(user=user_to_display, is_published=True)
 
