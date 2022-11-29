@@ -14,7 +14,7 @@ def create_navigation_context_from_page(page):
             }
     """
 
-    paginator = page.pagenator
+    paginator = page.paginator
     numbers = []
     display_first = False
     display_last = False
