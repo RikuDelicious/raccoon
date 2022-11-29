@@ -1,0 +1,36 @@
+{% extends 'articleapp/base.html' %}
+
+{% block title %}{{ user_to_display.username }}{% endblock title %}
+
+{% block main %}
+
+<div class="py-6 px-2 bg-[#091F2C] border border-[#D2D2D2] flex flex-col items-center mb-10">
+        <div class="mb-2">
+            <img src="{{ user_to_display.profile_image.url }}" alt="" class="w-20 h-20 rounded-full object-cover">
+        </div>
+        {% if user_to_display.display_name %}
+            <div class="text-xl text-[#E6E6E6] font-bold">
+                {{ user_to_display.display_name }}
+            </div>
+        {% endif %}
+        <div class="text-[#5D5C5C] text-xl mb-2">
+            @{{ user_to_display.username }}
+        </div>
+        <div class="text-[#E6E6E6]">
+            投稿数: {{ post_list_page.paginator.count }}
+        </div>
+</div>
+
+<h2 class="text-3xl font-bold text-[#E6E6E6] mb-6">投稿</h2>
+
+<!-- post_list -->
+<div>
+    {% include "articleapp/snippets/post_list.html" with posts=post_list_page.object_list %}
+</div>
+
+<!-- pagination nav -->
+<div class="border-t border-t-[#D2D2D2] pt-10 mb-6">
+    {% include "articleapp/snippets/pagination_nav.html" with page=post_list_page pagination_nav=post_list_pagination_nav %}
+</div>
+
+{% endblock main %}
