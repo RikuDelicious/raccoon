@@ -906,3 +906,63 @@ class LoginViewTests(TestCase):
         response = c.get(self.url, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func, views.index)
+
+
+class UserHomeViewTests(TestCase):
+    def setUp(self):
+        self.users = [
+            User.objects.create_user(username="testuser_0", password="testuser_0"),
+            User.objects.create_user(username="testuser_1", password="testuser_1"),
+        ]
+
+    def test_存在するユーザーのページにアクセス(self):
+        c = Client()
+
+        # 未ログインでアクセス
+        response = c.get(
+            reverse("user_home", kwargs={"username": self.users[0].username})
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # ログイン済み&ページのユーザーとは異なるユーザーでアクセス
+        c.login(username="testuser_1", password="testuser_1")
+        response = c.get(
+            reverse("user_home", kwargs={"username": self.users[0].username})
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # ログイン済み&ページのユーザーと同じユーザーでアクセス
+        response = c.get(
+            reverse("user_home", kwargs={"username": self.users[1].username})
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_存在するユーザーの下書き一覧にアクセス(self):
+        c = Client()
+
+        # 未ログインでアクセス
+        response = c.get(
+            reverse("user_home_drafts", kwargs={"username": self.users[0].username})
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.headers["Location"],
+            reverse("user_home", kwargs={"username": self.users[0].username}),
+        )
+
+        # ログイン済み&ページのユーザーとは異なるユーザーでアクセス
+        c.login(username="testuser_1", password="testuser_1")
+        response = c.get(
+            reverse("user_home_drafts", kwargs={"username": self.users[0].username})
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.headers["Location"],
+            reverse("user_home", kwargs={"username": self.users[0].username}),
+        )
+
+        # ログイン済み&ページのユーザーと同じユーザーでアクセス
+        response = c.get(
+            reverse("user_home_drafts", kwargs={"username": self.users[1].username})
+        )
+        self.assertEqual(response.status_code, 200)
