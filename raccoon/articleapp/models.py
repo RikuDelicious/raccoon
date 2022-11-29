@@ -42,7 +42,7 @@ class Post(models.Model):
     slug = models.SlugField(default=generate_random_slug)
     tags = models.ManyToManyField(to="Tag", blank=True)
     is_published = models.BooleanField(default=False)
-    date_publish = models.DateField(null=True)
+    date_publish = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
