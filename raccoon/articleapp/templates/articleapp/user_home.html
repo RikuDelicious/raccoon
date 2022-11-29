@@ -6,7 +6,8 @@
 
 <div class="py-6 px-2 bg-[#091F2C] border border-[#D2D2D2] flex flex-col items-center mb-10">
         <div class="mb-2">
-            <img src="{{ user_to_display.profile_image.url }}" alt="" class="w-20 h-20 rounded-full object-cover">
+            <img src="{% if post.user.profile_image %}{{ post.user.profile_image.url }}{% endif %}"
+                alt="" class="w-20 h-20 rounded-full object-cover">
         </div>
         {% if user_to_display.display_name %}
             <div class="text-xl text-[#E6E6E6] font-bold">
