@@ -211,10 +211,10 @@ def user_home(request, username, drafts=False):
     context["is_logged_in_user_home"] = False
     if request.user.is_authenticated and request.user == user_to_display:
         context["is_logged_in_user_home"] = True
-    
+
     # ユーザーの公開中の投稿取得
     posts = Post.objects.filter(user=user_to_display, is_published=True)
-    
+
     # 下書き一覧がリクエストされ、かつログイン中のユーザーであれば、下書きを取得する
     if drafts:
         if request.user.is_authenticated and request.user == user_to_display:
