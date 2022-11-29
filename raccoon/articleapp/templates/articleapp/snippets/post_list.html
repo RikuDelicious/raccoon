@@ -18,7 +18,7 @@
     
                     </div>
                     <p class="text-[#5D5C5C]">
-                        {{ post.date_publish }}
+                        {% if post.date_publish %}{{ post.date_publish }}{% endif %}
                     </p>
                 </div>
             </div>
