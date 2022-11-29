@@ -208,10 +208,7 @@ def user_home(request, username):
     context["user_to_display"] = user_to_display
 
     # ユーザーの投稿取得
-    posts = Post.objects.filter(user=user_to_display)
-    # ログイン中ユーザーでなければ公開中の投稿のみに絞り込む
-    if not request.user.is_authenticated or request.user != user_to_display:
-        posts = posts.filter(is_published=True)
+    posts = Post.objects.filter(user=user_to_display, is_published=True)
 
     # ページネーション
     # ページネーター作成
