@@ -966,3 +966,56 @@ class UserHomeViewTests(TestCase):
             reverse("user_home_drafts", kwargs={"username": self.users[1].username})
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_存在しないユーザーのページにアクセス(self):
+        c = Client()
+        response = c.get(reverse("user_home", kwargs={"username": "unknownuser"}))
+        self.assertEqual(response.status_code, 404)
+
+        response = c.get(
+            reverse("user_home_drafts", kwargs={"username": "unknownuser"})
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_urlで指定したユーザーの情報取得(self):
+        c = Client()
+        # 通常のユーザーページ
+        response = c.get(
+            reverse("user_home", kwargs={"username": self.users[0].username})
+        )
+        self.assertEqual(response.context["user_to_display"], self.users[0])
+
+        # 下書き一覧
+        c.login(username="testuser_0", password="testuser_0")
+        response = c.get(
+            reverse("user_home_drafts", kwargs={"username": self.users[0].username})
+        )
+        self.assertEqual(response.context["user_to_display"], self.users[0])
+
+    def test_閲覧ユーザーとページのユーザーが同じかどうかをコンテキストに保持(self):
+        c = Client()
+
+        # 未ログイン
+        response = c.get(
+            reverse("user_home", kwargs={"username": self.users[0].username})
+        )
+        self.assertEqual(response.context["is_logged_in_user_home"], False)
+
+        # ログイン済み&ページのユーザーとは異なるユーザー
+        c.login(username="testuser_1", password="testuser_1")
+        response = c.get(
+            reverse("user_home", kwargs={"username": self.users[0].username})
+        )
+        self.assertEqual(response.context["is_logged_in_user_home"], False)
+
+        # ログイン済み&ページのユーザーと同じユーザーでアクセス
+        response = c.get(
+            reverse("user_home", kwargs={"username": self.users[1].username})
+        )
+        self.assertEqual(response.context["is_logged_in_user_home"], True)
+
+        # ログイン済み&ページのユーザーと同じユーザーで下書き一覧にアクセス
+        response = c.get(
+            reverse("user_home_drafts", kwargs={"username": self.users[1].username})
+        )
+        self.assertEqual(response.context["is_logged_in_user_home"], True)
