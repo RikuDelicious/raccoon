@@ -7,10 +7,14 @@
     {{ post.title }}
 </h1>
 <div class="flex items-center mb-1">
-    <a href="" class="mr-2"><img src="{{ post.user.profile_image.url }}" alt="" class="w-10 h-10 rounded-full object-cover"></a>
+    <a href="{% url 'user_home' username=post.user.username %}" class="mr-2">
+        <img src="{% if post.user.profile_image %}{{ post.user.profile_image.url }}{% endif %}"
+            alt="" class="w-10 h-10 rounded-full object-cover">
+    </a>
     <div>
         <div>
-            <a href="" class="text-[#E6E6E6] hover:underline">
+            <a href="{% url 'user_home' username=post.user.username %}"
+                class="text-[#E6E6E6] hover:underline">
                 @{{ post.user.username }}
                 {% if post.user.display_name %}
                 <span>({{ post.user.display_name }})</span>
@@ -19,7 +23,7 @@
 
         </div>
         <p class="text-[#5D5C5C]">
-            {{ post.date_publish }}
+            {% if post.date_publish %}{{ post.date_publish }}{% endif %}
         </p>
     </div>
 </div>
@@ -35,7 +39,12 @@
     {{ post.body }}
 </div>
 <div class="pt-2 border-t border-t-[#D2D2D2]">
-    <p class="text-2xl font-bold text-[#E6E6E6] mb-2">{{ post_user.display_name }}@{{ post_user.username }}さんの他の記事</p>
+    <p class="text-2xl font-bold text-[#E6E6E6] mb-2">
+        {% if post_user.display_name %}
+            {{ post_user.display_name }}
+        {% endif %}
+        @{{ post_user.username }}さんの他の記事
+    </p>
     <ul class="list-disc list-inside mb-2">
         {% for post in other_posts %}
         <li class="mb-1 text-[#75B6E7]">
@@ -47,8 +56,12 @@
         {% endfor %}
     </ul>
     <p>
-        <a href="" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA]">
-            {{ post_user.display_name }}@{{ post_user.username }}さんの全ての記事
+        <a href="{% url 'user_home' username=post.user.username %}"
+            class="text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA]">
+            {% if post_user.display_name %}
+                {{ post_user.display_name }}
+            {% endif %}
+            @{{ post_user.username }}さんの全ての記事
         </a>
     </p>
 </div>

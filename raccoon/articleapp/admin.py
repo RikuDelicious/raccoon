@@ -53,7 +53,7 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(models.Post)
 class PostAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("title", "user", "is_published", "date_publish")
 
 
 @admin.register(models.Tag)

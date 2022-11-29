@@ -10,6 +10,7 @@ from django.utils import timezone
 
 from .forms import UserCreationForm
 from .models import Post, Tag, User
+from .utils.pagination import create_navigation_context_from_page
 
 
 # Create your views here.
@@ -196,3 +197,53 @@ def signup(request):
     else:
         form = UserCreationForm()
         return render(request, "articleapp/signup.html", {"form": form})
+
+
+def user_home(request, username, drafts=False):
+    querydict = request.GET
+    context = {}
+
+    # urlで指定されたユーザー取得
+    user_to_display = get_object_or_404(User, username=username)
+    context["user_to_display"] = user_to_display
+
+    # ログイン中のユーザーのページであるかどうかをコンテキストに保持する
+    context["is_logged_in_user_home"] = False
+    if request.user.is_authenticated and request.user == user_to_display:
+        context["is_logged_in_user_home"] = True
+
+    # ユーザーの公開中の投稿取得
+    posts = Post.objects.filter(user=user_to_display, is_published=True)
+
+    # 下書き一覧がリクエストされ、かつログイン中のユーザーであれば、下書きを取得する
+    if drafts:
+        if request.user.is_authenticated and request.user == user_to_display:
+            posts = Post.objects.filter(user=user_to_display, is_published=False)
+            # コンテキストで下書き一覧であることのフラグを保持
+            context["drafts"] = True
+        else:
+            # ログイン中のユーザーでなければ通常のユーザーページにリダイレクトする
+            return redirect("user_home", username=username)
+
+    # ページネーション
+    # ページネーター作成
+    paginate_by = 10
+    if "paginate_by" in querydict:
+        try:
+            paginate_by = int(querydict["paginate_by"])
+        except ValueError:
+            pass
+    paginator = Paginator(posts, paginate_by)
+    # ページ作成
+    page_number = 1
+    if "page" in querydict:
+        try:
+            page_number = int(querydict["page"])
+        except ValueError:
+            # intに変換できない値はスルー
+            pass
+    page = paginator.get_page(page_number)
+    context["post_list_page"] = page
+    context["post_list_pagination_nav"] = create_navigation_context_from_page(page)
+
+    return render(request, "articleapp/user_home.html", context)
