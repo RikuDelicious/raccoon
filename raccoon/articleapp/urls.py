@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path, reverse_lazy
 
 from . import views
@@ -20,6 +20,7 @@ urlpatterns = [
         ),
         name="login",
     ),
+    path("logout/", LogoutView.as_view(next_page=reverse_lazy("index")), name="logout"),
     # ユーザー関連ページ（先頭が任意のユーザー名のため末尾にまとめる）
     path("<str:username>/home/", views.user_home, name="user_home"),
     path(
