@@ -17,8 +17,10 @@ def generate_random_slug():
 
 # Create your models here.
 class User(AbstractUser):
-    display_name = models.CharField(max_length=100, null=True)
-    profile_image = models.ImageField(upload_to="uploads/", null=True)
+    display_name = models.CharField(max_length=100, null=True, verbose_name="ニックネーム")
+    profile_image = models.ImageField(
+        upload_to="uploads/", null=True, verbose_name="プロフィール画像"
+    )
 
     username_validator = ASCIIUsernameValidator()
     username = models.CharField(
