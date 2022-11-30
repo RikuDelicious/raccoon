@@ -20,7 +20,18 @@ urlpatterns = [
         name="login",
     ),
     path("logout/", LogoutView.as_view(), name="logout"),
-    path("settings/", views.user_settings, name="user_settings"),
+    path(
+        "settings/profile/",
+        views.user_settings,
+        name="user_settings_profile",
+        kwargs={"tab": "profile"},
+    ),
+    path(
+        "settings/account/",
+        views.user_settings,
+        name="user_settings_account",
+        kwargs={"tab": "account"},
+    ),
     # ユーザー関連ページ（先頭が任意のユーザー名のため末尾にまとめる）
     path("<str:username>/home/", views.user_home, name="user_home"),
     path(
