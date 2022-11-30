@@ -133,4 +133,5 @@ INTERNAL_IPS = ["127.0.0.1"]
 # ユーザーアップロードファイルの設定
 MEDIA_URL = "media/"
 
+LOGIN_REDIRECT_URL = reverse_lazy("index")
 LOGIN_URL = reverse_lazy("login")
