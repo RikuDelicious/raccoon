@@ -1,0 +1,24 @@
+<form action="{% url 'user_settings_account' %}"method="post" class="form_general mb-6">
+{% csrf_token %}
+    <div class="text-[#E6E6E6] mb-4">
+        <div class="mb-2">▼{{ form.username.label_tag }}</div>
+        <div class="mb-2">{{ form.username }}</div>
+        {% if form.username.errors %}
+            <div>
+                {{ form.username.errors }}
+            </div>
+        {% endif %}
+    </div>
+
+    <input type="submit" value="更新" class="bg-[#75B6E7] text-[#000000] 
+        hover:bg-[#278CDA] hover:underline font-bold rounded-md py-2 px-4">
+</form>
+
+<div class="mb-6">
+    <div class="text-[#E6E6E6]">▼パスワード変更</div>
+    <div><a href="" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline">変更する</a></div>
+</div>
+<div>
+    <div class="text-[#E6E6E6]">▼アカウント</div>
+    <div><a href="" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline">退会する</a></div>
+</div>

@@ -16,5 +16,7 @@
 </ul>
 {% if current_menu_item == "profile" %}
     {% include "articleapp/snippets/settings_profile.html" with form=form %}
+{% elif current_menu_item == "account" %}
+    {% include "articleapp/snippets/settings_account.html" with form=form %}
 {% endif %}
 {% endblock main %}
