@@ -15,12 +15,12 @@ urlpatterns = [
         "login/",
         LoginView.as_view(
             template_name="articleapp/login.html",
-            next_page=reverse_lazy("index"),
             redirect_authenticated_user=True,
         ),
         name="login",
     ),
-    path("logout/", LogoutView.as_view(next_page=reverse_lazy("index")), name="logout"),
+    path("logout/", LogoutView.as_view(), name="logout"),
+    path("settings/", views.user_settings, name="user_settings"),
     # ユーザー関連ページ（先頭が任意のユーザー名のため末尾にまとめる）
     path("<str:username>/home/", views.user_home, name="user_home"),
     path(
