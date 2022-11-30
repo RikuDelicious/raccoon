@@ -251,8 +251,8 @@ def user_home(request, username, drafts=False):
 
 
 @login_required
-def user_settings(request, menu="profile"):
-    context = {"menu": menu}
+def user_settings(request, current_menu_item="profile"):
+    context = {"current_menu_item": current_menu_item}
     context["menu_items"] = [
         {"name": "profile", "label": "プロフィール"},
         {"name": "account", "label": "アカウント情報"},

@@ -24,13 +24,13 @@ urlpatterns = [
         "settings/profile/",
         views.user_settings,
         name="user_settings_profile",
-        kwargs={"menu": "profile"},
+        kwargs={"current_menu_item": "profile"},
     ),
     path(
         "settings/account/",
         views.user_settings,
         name="user_settings_account",
-        kwargs={"menu": "account"},
+        kwargs={"current_menu_item": "account"},
     ),
     # ユーザー関連ページ（先頭が任意のユーザー名のため末尾にまとめる）
     path("<str:username>/home/", views.user_home, name="user_home"),
