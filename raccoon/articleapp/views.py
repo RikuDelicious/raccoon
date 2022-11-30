@@ -251,5 +251,6 @@ def user_home(request, username, drafts=False):
 
 
 @login_required
-def user_settings(request):
-    return render(request, "articleapp/user_settings.html")
+def user_settings(request, tab="profile"):
+    context = {"tab": tab}
+    return render(request, "articleapp/user_settings.html", context)
