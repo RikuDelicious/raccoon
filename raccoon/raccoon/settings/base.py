@@ -135,5 +135,5 @@ MEDIA_URL = "media/"
 
 # ログイン/ログアウトのデフォルトページ
 LOGIN_REDIRECT_URL = "index"
-LOGIN_URL = "logout"
+LOGIN_URL = "login"
 LOGOUT_REDIRECT_URL = "index"
