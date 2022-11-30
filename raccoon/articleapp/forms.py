@@ -17,3 +17,9 @@ class ProfileUpdateForm(ModelForm):
         widgets = {
             "profile_image": ClearableFileInput(),
         }
+
+
+class AccountUpdateForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ["username"]
