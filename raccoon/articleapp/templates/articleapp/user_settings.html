@@ -7,12 +7,12 @@
 <ul class="flex text-lg text-[#75B6E7] mb-6">
     {% for item in menu_items %}
         {% if item.name == current_menu_item %}
-            <li class="p-2 border-x border-t">{{ item.label }}</li>
+            <li class="p-2 border-x border-t border-[#D2D2D2]">{{ item.label }}</li>
         {% else %}
-            <li class="p-2 border-b"><a href="{% url item.url_name %}">{{ item.label }}</a></li>
+            <li class="p-2 border-b border-[#D2D2D2]"><a href="{% url item.url_name %}">{{ item.label }}</a></li>
         {% endif %}
     {% endfor %}
-    <li class="grow border-b"></li>
+    <li class="grow border-b border-[#D2D2D2]"></li>
 </ul>
 {% if current_menu_item == "profile" %}
     {% include "articleapp/snippets/settings_profile.html" with form=form %}
