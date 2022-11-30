@@ -21,9 +21,21 @@
                         class="w-full bg-transparent border-[#D2D2D2] focus:border-[#D2D2D2] rounded-md text-[#E6E6E6]">
                 </form>
             </div>
-            <div class="whitespace-nowrap flex-1 text-right">
+            <div class="whitespace-nowrap flex-1 text-right relative">
                 {% if request.user.is_authenticated %}
-                {% comment %} TODO: ユーザーアイコンを表示 {% endcomment %}
+                    <button id="header_user_icon" class="w-8 h-8 align-bottom">
+                        <img src="{% if request.user.profile_image %}{{ request.user.profile_image.url }}{% endif %}"
+                            alt="" class="w-8 h-8 rounded-full object-cover">
+                    </button>
+                    <div id="header_user_menu" class="bg-[#2B2B2B] py-4 px-4 absolute right-0 top-10"
+                            style="display: none;">
+                        <ul class="text-left">
+                            <li><a href="" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline">マイページ</a></li>
+                            <li><a href="" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline">設定</a></li>
+                            <li><a href="" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline">新規投稿</a></li>
+                            <li><a href="" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline">ログアウト</a></li>
+                        </ul>
+                    </div>
                 {% else %}
                     <a href="{% url 'login' %}"
                         class="text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA] mr-2">ログイン</a>
@@ -39,6 +51,16 @@
     <div id="main" class="max-w-[1120px] mx-auto mb-10 px-3">
         {% block main %}{% endblock main %}
     </div>
+
+    <!-- scripts -->
+    {% if debug %}
+        <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+        crossorigin="anonymous"></script>
+    {% else %}
+        <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    {% endif %}
+    <script src="{% static 'articleapp/header.js' %}"></script>
     {% block scripts %}{% endblock scripts %}
 </body>
 
