@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 
+from django.urls import reverse_lazy
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -130,3 +132,5 @@ INTERNAL_IPS = ["127.0.0.1"]
 
 # ユーザーアップロードファイルの設定
 MEDIA_URL = "media/"
+
+LOGIN_URL = reverse_lazy("login")
