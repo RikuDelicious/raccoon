@@ -251,6 +251,10 @@ def user_home(request, username, drafts=False):
 
 
 @login_required
-def user_settings(request, tab="profile"):
-    context = {"tab": tab}
+def user_settings(request, menu="profile"):
+    context = {"menu": menu}
+    context["menu_items"] = [
+        {"name": "profile", "label": "プロフィール"},
+        {"name": "account", "label": "アカウント情報"},
+    ]
     return render(request, "articleapp/user_settings.html", context)
