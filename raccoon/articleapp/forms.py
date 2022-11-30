@@ -10,10 +10,10 @@ class UserCreationForm(BaseUserCreationForm):
         model = User
 
 
-class UserForm(ModelForm):
+class ProfileUpdateForm(ModelForm):
     class Meta:
         model = User
-        fields = ["username", "display_name", "profile_image"]
+        fields = ["display_name", "profile_image"]
         widgets = {
             "profile_image": ClearableFileInput(),
         }
