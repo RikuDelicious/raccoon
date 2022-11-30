@@ -7,6 +7,7 @@ from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 from .forms import UserCreationForm
 from .models import Post, Tag, User
@@ -247,3 +248,8 @@ def user_home(request, username, drafts=False):
     context["post_list_pagination_nav"] = create_navigation_context_from_page(page)
 
     return render(request, "articleapp/user_home.html", context)
+
+
+@login_required
+def user_settings(request):
+    return render(request, "articleapp/user_settings.html")
