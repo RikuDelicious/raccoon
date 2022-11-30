@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 
-from .forms import UserCreationForm
+from .forms import UserCreationForm, ProfileUpdateForm
 from .models import Post, Tag, User
 from .utils.pagination import create_navigation_context_from_page
 
@@ -254,7 +254,18 @@ def user_home(request, username, drafts=False):
 def user_settings(request, current_menu_item="profile"):
     context = {"current_menu_item": current_menu_item}
     context["menu_items"] = [
-        {"name": "profile", "label": "プロフィール"},
-        {"name": "account", "label": "アカウント情報"},
+        {"name": "profile", "label": "プロフィール", "url_name": "user_settings_profile"},
+        {"name": "account", "label": "アカウント情報", "url_name": "user_settings_account"},
     ]
+
+    if request.method == "POST":
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect(request.resolver_match.url_name)
+        else:
+            context["form"] = form
+            return render(request, "articleapp/user_settings.html", context, status=400)
+
+    context["form"] = ProfileUpdateForm(instance=request.user)
     return render(request, "articleapp/user_settings.html", context)
