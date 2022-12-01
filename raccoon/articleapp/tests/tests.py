@@ -6,9 +6,9 @@ from django.test import Client, TestCase
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 
-from . import views
-from .forms import UserCreationForm, ProfileUpdateForm, AccountUpdateForm
-from .models import Post, Tag, User
+from .. import views
+from ..forms import UserCreationForm, ProfileUpdateForm, AccountUpdateForm
+from ..models import Post, Tag, User
 
 
 # Create your tests here.
