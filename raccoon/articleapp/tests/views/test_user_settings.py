@@ -153,7 +153,9 @@ class UserSettingsTests(TestCase):
             # profile_imageフィールドは変更しない場合ファイルを送信しない
             response = c.post(self.url_user_settings_profile, post_data)
             self.assertEqual(response.status_code, 302)
-            self.assertEqual(response.headers["Location"], self.url_user_settings_profile)
+            self.assertEqual(
+                response.headers["Location"], self.url_user_settings_profile
+            )
 
             # フォーム送信後のユーザー情報の確認
             user = User.objects.get(pk=self.users[i].id)
@@ -176,7 +178,9 @@ class UserSettingsTests(TestCase):
             # profile_imageフィールドは変更しない場合ファイルを送信しない
             response = c.post(self.url_user_settings_profile, post_data)
             self.assertEqual(response.status_code, 302)
-            self.assertEqual(response.headers["Location"], self.url_user_settings_profile)
+            self.assertEqual(
+                response.headers["Location"], self.url_user_settings_profile
+            )
 
             # フォーム送信後のユーザー情報の確認
             user = User.objects.get(pk=self.users[i].id)
@@ -205,7 +209,9 @@ class UserSettingsTests(TestCase):
                 post_data["profile_image"] = f
                 response = c.post(self.url_user_settings_profile, post_data)
                 self.assertEqual(response.status_code, 302)
-                self.assertEqual(response.headers["Location"], self.url_user_settings_profile)
+                self.assertEqual(
+                    response.headers["Location"], self.url_user_settings_profile
+                )
 
                 # フォーム送信後のユーザー情報の確認
                 user = User.objects.get(pk=self.users[i].id)
@@ -216,7 +222,7 @@ class UserSettingsTests(TestCase):
                     filecmp.cmp(user.profile_image.path, upload_image_path),
                     msg="フォーム送信後のユーザーのプロフィール画像が期待値と異なります",
                 )
-    
+
     def test_プロフィール更新_ニックネームとプロフィール画像を変更(self):
         c = Client()
         for i in range(len(self.users)):
@@ -236,7 +242,9 @@ class UserSettingsTests(TestCase):
                 post_data["profile_image"] = f
                 response = c.post(self.url_user_settings_profile, post_data)
                 self.assertEqual(response.status_code, 302)
-                self.assertEqual(response.headers["Location"], self.url_user_settings_profile)
+                self.assertEqual(
+                    response.headers["Location"], self.url_user_settings_profile
+                )
 
                 # フォーム送信後のユーザー情報の確認
                 user = User.objects.get(pk=self.users[i].id)
