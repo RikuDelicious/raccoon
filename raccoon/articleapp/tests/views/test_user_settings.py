@@ -255,6 +255,22 @@ class UserSettingsTests(TestCase):
                     msg="フォーム送信後のユーザーのプロフィール画像が期待値と異なります",
                 )
 
+    def test_プロフィール更新_プロフィール画像を削除(self):
+        c = Client()
+        for i in range(len(self.users)):
+            c.login(username=f"testuser_{i}", password=f"testuser_{i}")
+            post_data = {"profile_image-clear": True}
+
+            response = c.post(self.url_user_settings_profile, post_data)
+            self.assertEqual(response.status_code, 302)
+            self.assertEqual(
+                response.headers["Location"], self.url_user_settings_profile
+            )
+
+            # ユーザーのプロフィール画像が削除されていることの確認
+            user = User.objects.get(pk=self.users[i].id)
+            self.assertIsNone(user.profile_image or None)
+
     def test_プロフィール更新_エラーでページ再表示(self):
         c = Client()
         c.login(username="testuser_0", password="testuser_0")
