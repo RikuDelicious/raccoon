@@ -255,3 +255,39 @@ class UserSettingsTests(TestCase):
                     filecmp.cmp(user.profile_image.path, upload_image_path),
                     msg="フォーム送信後のユーザーのプロフィール画像が期待値と異なります",
                 )
+
+    def test_アカウント情報_変更なしで送信(self):
+        c = Client()
+        for i in range(len(self.users)):
+            c.login(username=f"testuser_{i}", password=f"testuser_{i}")
+            response = c.get(self.url_user_settings_account)
+            form = response.context["form"]
+            post_data = {"username": form.initial["username"]}
+
+            response = c.post(self.url_user_settings_account, post_data)
+            self.assertEqual(response.status_code, 302)
+            self.assertEqual(
+                response.headers["Location"], self.url_user_settings_account
+            )
+
+            # フォーム送信後のユーザー情報の確認
+            user = User.objects.get(pk=self.users[i].id)
+            self.assertEqual(user.username, form.initial["username"])
+
+    def test_アカウント情報_ユーザー名変更(self):
+        c = Client()
+        for i in range(len(self.users)):
+            c.login(username=f"testuser_{i}", password=f"testuser_{i}")
+            response = c.get(self.url_user_settings_account)
+            form = response.context["form"]
+            post_data = {"username": f"testuser_{i}_new"}
+
+            response = c.post(self.url_user_settings_account, post_data)
+            self.assertEqual(response.status_code, 302)
+            self.assertEqual(
+                response.headers["Location"], self.url_user_settings_account
+            )
+
+            # フォーム送信後のユーザー情報の確認
+            user = User.objects.get(pk=self.users[i].id)
+            self.assertEqual(user.username, post_data["username"])
