@@ -31,7 +31,7 @@
                             style="display: none;">
                         <ul class="text-left">
                             <li><a href="{% url 'user_home' username=request.user.username %}" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline">マイページ</a></li>
-                            <li><a href="" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline">設定</a></li>
+                            <li><a href="{% url 'user_settings' %}" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline">設定</a></li>
                             <li><a href="" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline">新規投稿</a></li>
                             <li>
                                 <form action="{% url 'logout' %}" method="post">

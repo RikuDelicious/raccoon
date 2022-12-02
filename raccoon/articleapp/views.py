@@ -7,8 +7,9 @@ from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
-from .forms import UserCreationForm
+from .forms import UserCreationForm, ProfileUpdateForm, AccountUpdateForm
 from .models import Post, Tag, User
 from .utils.pagination import create_navigation_context_from_page
 
@@ -247,3 +248,32 @@ def user_home(request, username, drafts=False):
     context["post_list_pagination_nav"] = create_navigation_context_from_page(page)
 
     return render(request, "articleapp/user_home.html", context)
+
+
+@login_required
+def user_settings(request, current_menu_item="profile"):
+    context = {"current_menu_item": current_menu_item}
+    context["menu_items"] = [
+        {"name": "profile", "label": "プロフィール", "url_name": "user_settings_profile"},
+        {"name": "account", "label": "アカウント情報", "url_name": "user_settings_account"},
+    ]
+
+    form = ProfileUpdateForm(instance=request.user)
+    if current_menu_item == "account":
+        form = AccountUpdateForm(instance=request.user)
+
+    if request.method == "POST":
+        if current_menu_item == "profile":
+            form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user)
+        elif current_menu_item == "account":
+            form = AccountUpdateForm(request.POST, instance=request.user)
+
+        if form.is_valid():
+            form.save()
+            return redirect(request.resolver_match.url_name)
+        else:
+            context["form"] = form
+            return render(request, "articleapp/user_settings.html", context, status=400)
+
+    context["form"] = form
+    return render(request, "articleapp/user_settings.html", context)

@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.views import LoginView, LogoutView
-from django.urls import path, reverse_lazy
+from django.urls import path
+from django.views.generic.base import RedirectView
 
 from . import views
 
@@ -15,12 +16,28 @@ urlpatterns = [
         "login/",
         LoginView.as_view(
             template_name="articleapp/login.html",
-            next_page=reverse_lazy("index"),
             redirect_authenticated_user=True,
         ),
         name="login",
     ),
-    path("logout/", LogoutView.as_view(next_page=reverse_lazy("index")), name="logout"),
+    path("logout/", LogoutView.as_view(), name="logout"),
+    path(
+        "settings/",
+        RedirectView.as_view(pattern_name="user_settings_profile"),
+        name="user_settings",
+    ),
+    path(
+        "settings/profile/",
+        views.user_settings,
+        name="user_settings_profile",
+        kwargs={"current_menu_item": "profile"},
+    ),
+    path(
+        "settings/account/",
+        views.user_settings,
+        name="user_settings_account",
+        kwargs={"current_menu_item": "account"},
+    ),
     # ユーザー関連ページ（先頭が任意のユーザー名のため末尾にまとめる）
     path("<str:username>/home/", views.user_home, name="user_home"),
     path(
