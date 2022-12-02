@@ -227,7 +227,6 @@ class UserSettingsTests(TestCase):
         c = Client()
         for i in range(len(self.users)):
             c.login(username=f"testuser_{i}", password=f"testuser_{i}")
-            response = c.get(self.url_user_settings_profile)
             post_data = {}
 
             # ニックネームを変更
