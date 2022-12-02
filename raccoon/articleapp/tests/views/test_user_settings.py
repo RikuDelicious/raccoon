@@ -255,6 +255,24 @@ class UserSettingsTests(TestCase):
                     msg="フォーム送信後のユーザーのプロフィール画像が期待値と異なります",
                 )
 
+    def test_プロフィール更新_エラーでページ再表示(self):
+        c = Client()
+        c.login(username="testuser_0", password="testuser_0")
+        response = c.get(self.url_user_settings_profile)
+        form = response.context["form"]
+        # 最大文字数を越えるニックネームを送信する
+        display_name = "".join(
+            ["あ" for i in range(form.fields["display_name"].max_length + 1)]
+        )
+        response = c.post(
+            self.url_user_settings_profile, {"display_name": display_name}
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.resolver_match.url_name, "user_settings_profile")
+        self.assertNotEqual(response.context["form"].errors.as_data(), {})
+        self.assertFalse(User.objects.filter(display_name=display_name).exists())
+
     def test_アカウント情報_変更なしで送信(self):
         c = Client()
         for i in range(len(self.users)):
@@ -290,3 +308,15 @@ class UserSettingsTests(TestCase):
             # フォーム送信後のユーザー情報の確認
             user = User.objects.get(pk=self.users[i].id)
             self.assertEqual(user.username, post_data["username"])
+
+    def test_アカウント情報_エラーでページ再表示(self):
+        c = Client()
+        c.login(username="testuser_0", password="testuser_0")
+        # ascii文字以外のusernameを送信する
+        username = "あいうえおかきくけこ"
+        response = c.post(self.url_user_settings_account, {"username": username})
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.resolver_match.url_name, "user_settings_account")
+        self.assertNotEqual(response.context["form"].errors.as_data(), {})
+        self.assertFalse(User.objects.filter(username=username).exists())
