@@ -1,7 +1,7 @@
 import datetime
 import random
 
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.http import JsonResponse
@@ -277,3 +277,14 @@ def user_settings(request, current_menu_item="profile"):
 
     context["form"] = form
     return render(request, "articleapp/user_settings.html", context)
+
+
+@login_required
+def deactivate(request):
+    if request.method == "POST":
+        user = request.user
+        logout(request)
+        user.deactivate()
+
+        return redirect("index")
+    return render(request, "articleapp/deactivate.html")
