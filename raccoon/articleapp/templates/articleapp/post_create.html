@@ -12,6 +12,7 @@
         {{ form.non_field_errors }}
         {% include 'articleapp/snippets/field.html' with field=form.title %}
         {% include 'articleapp/snippets/field.html' with field=form.tags_text %}
+        {% include 'articleapp/snippets/field.html' with field=form.slug %}
         {% include 'articleapp/snippets/field.html' with field=form.body %}
         <input type="submit" value="登録する" class="bg-[#75B6E7] text-[#000000] hover:bg-[#278CDA] hover:underline font-bold rounded-md py-2 px-4 hover:cursor-pointer">
     </form>
