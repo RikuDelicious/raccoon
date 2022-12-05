@@ -54,11 +54,11 @@ class User(AbstractUser):
 
 
 class Post(models.Model):
-    title = models.CharField(max_length=200)
-    body = models.TextField()
+    title = models.CharField(max_length=200, verbose_name="タイトル")
+    body = models.TextField(verbose_name="本文")
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    slug = models.SlugField(default=generate_random_slug)
-    tags = models.ManyToManyField(to="Tag", blank=True)
+    slug = models.SlugField(default=generate_random_slug, verbose_name="スラッグ")
+    tags = models.ManyToManyField(to="Tag", blank=True, verbose_name="タグ")
     is_published = models.BooleanField(default=False)
     date_publish = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
