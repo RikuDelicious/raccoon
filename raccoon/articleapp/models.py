@@ -65,7 +65,7 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["-date_publish", "created_at"]
+        ordering = ["-date_publish", "-created_at"]
         constraints = [
             models.UniqueConstraint(fields=["user", "slug"], name="unique_user_slug"),
         ]
