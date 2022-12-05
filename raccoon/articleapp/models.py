@@ -55,7 +55,7 @@ class User(AbstractUser):
 
 class Post(models.Model):
     title = models.CharField(max_length=200, verbose_name="タイトル")
-    body = models.TextField(verbose_name="本文")
+    body = models.TextField(verbose_name="本文", blank=True)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     slug = models.SlugField(default=generate_random_slug, verbose_name="スラッグ")
     tags = models.ManyToManyField(to="Tag", blank=True, verbose_name="タグ")
