@@ -51,13 +51,13 @@ class DeactivateViewTests(TestCase):
         c.login(username="testuser_0", password="testuser_0")
         response = c.get(self.url)
         self.assertEqual(response.status_code, 200)
-    
+
     def test_退会する(self):
         c = Client()
         c.login(username="testuser_0", password="testuser_0")
         self.assertTrue("_auth_user_id" in c.session)
         response = c.post(self.url)
-        
+
         # ログアウトしていることの確認
         self.assertFalse("_auth_user_id" in c.session)
 
@@ -67,7 +67,9 @@ class DeactivateViewTests(TestCase):
         self.assertEqual(redirect_url.path, reverse("index"))
 
         # 再度ログインできないことの確認
-        response = c.post(reverse("login"), {"username": "testuser_0", "password": "testuser_0"})
+        response = c.post(
+            reverse("login"), {"username": "testuser_0", "password": "testuser_0"}
+        )
         self.assertFalse("_auth_user_id" in c.session)
         c.login(username="testuser_0", password="testuser_0")
         self.assertFalse("_auth_user_id" in c.session)
@@ -82,5 +84,9 @@ class DeactivateViewTests(TestCase):
         response = c.get(reverse("user_home_drafts", kwargs={"username": "testuser_0"}))
         self.assertEqual(response.status_code, 404)
 
-        response = c.get(reverse("post_detail", kwargs={"username": "testuser_0", "slug": "post_0_slug"}))
+        response = c.get(
+            reverse(
+                "post_detail", kwargs={"username": "testuser_0", "slug": "post_0_slug"}
+            )
+        )
         self.assertEqual(response.status_code, 404)
