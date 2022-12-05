@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 
-from .forms import UserCreationForm, ProfileUpdateForm, AccountUpdateForm
+from .forms import UserCreationForm, ProfileUpdateForm, AccountUpdateForm, PostForm
 from .models import Post, Tag, User
 from .utils.pagination import create_navigation_context_from_page
 
@@ -288,3 +288,22 @@ def deactivate(request):
 
         return redirect("index")
     return render(request, "articleapp/deactivate.html")
+
+@login_required
+def post_create(request):
+    context = {}
+
+    if request.method == "POST":
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save()
+            post.user = request.user
+            post.save()
+            return redirect("user_home", username=request.user.username)
+        else:
+            context["form"] = form
+            return render(request, "articleapp/post_create.html", context, status=400)
+    
+    form = PostForm()
+    context["form"] = form
+    return render(request, "articleapp/post_create.html", context)

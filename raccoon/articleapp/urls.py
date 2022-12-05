@@ -10,6 +10,7 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("search/", views.search, name="search"),
     path("search_tags/", views.search_tags, name="search_tags"),
+    path("new/", views.post_create, name="post_create"),
     # User認証関連
     path("signup/", views.signup, name="signup"),
     path(

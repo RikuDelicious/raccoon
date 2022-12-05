@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.forms import ModelForm
 
-from .models import User
+from .models import User, Post
 from .widgets import ClearableFileInput
 
 
@@ -23,3 +23,8 @@ class AccountUpdateForm(ModelForm):
     class Meta:
         model = User
         fields = ["username"]
+
+class PostForm(ModelForm):
+    class Meta:
+        model = Post
+        fields = ["title", "slug", "tags", "body"]

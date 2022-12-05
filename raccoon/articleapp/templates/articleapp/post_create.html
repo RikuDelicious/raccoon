@@ -1,0 +1,41 @@
+{% extends 'articleapp/base.html' %}
+
+{% block title %}新規投稿{% endblock title %}
+
+{% block main %}
+
+<div class="">
+    <h1 class="text-4xl font-bold text-[#E6E6E6] mb-10">新規投稿</h1>
+
+    <form action="{% url 'post_create' %}" method="post" class="form_general">
+        {% csrf_token %}
+        {{ form.non_field_errors }} 
+        {% for field in form %}
+            <div class="mb-4">
+                <div class="flex items-center mb-1">
+                    {% if field.errors %}
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-1 text-[#FF0000]">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                    </svg>
+                    {% endif %}
+                    {{ field.label_tag }}
+                </div>
+                {% if field.errors %}
+                    <div class=" mb-1">
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+                <div>
+                    {{ field }}
+                </div>
+                {% if field.help_text %}
+                    <div class="text-sm pt-1 text-[#5D5C5C]">
+                        {{ field.help_text }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <input type="submit" value="登録する" class="bg-[#75B6E7] text-[#000000] hover:bg-[#278CDA] hover:underline font-bold rounded-md py-2 px-4 hover:cursor-pointer">
+    </form>
+</div>
+{% endblock main %}
