@@ -205,7 +205,7 @@ def user_home(request, username, drafts=False):
     context = {}
 
     # urlで指定されたユーザー取得
-    user_to_display = get_object_or_404(User, username=username)
+    user_to_display = get_object_or_404(User, username=username, is_active=True)
     context["user_to_display"] = user_to_display
 
     # ログイン中のユーザーのページであるかどうかをコンテキストに保持する
