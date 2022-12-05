@@ -24,7 +24,7 @@
         @apply font-bold text-[#E6E6E6];
     }
 
-    input[type="text"], input[type="password"] {
+    input[type="text"], input[type="password"], textarea {
         @apply bg-[#2B2B2B] border-[#D2D2D2] focus:border-[#D2D2D2] rounded-md text-[#E6E6E6] w-[100%];
     }
 
