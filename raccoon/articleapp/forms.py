@@ -27,7 +27,8 @@ class AccountUpdateForm(ModelForm):
 
 
 class PostForm(ModelForm):
-    tags_text = forms.CharField(max_length=200, required=False)
+    tags_text = forms.CharField(max_length=200, required=False, label="タグ")
+
     class Meta:
         model = Post
         fields = ["title", "slug", "tags", "body", "user"]

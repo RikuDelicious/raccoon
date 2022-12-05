@@ -295,9 +295,18 @@ def post_create(request):
     context = {}
 
     if request.method == "POST":
-        # QueryDictにuserフィールドの値を加える
         querydict = request.POST.copy()
+        # QueryDictにuserフィールドの値を加える
         querydict["user"] = request.user
+
+        # tagsフィールドにタグのリストをセットする
+        tags_text = querydict["tags_text"].split()
+        tags = [
+            Tag.objects.get_or_create(name=tag_text)[0].id for tag_text in tags_text
+        ]
+        querydict.setlist("tags", tags)
+
+        # フォームにデータを紐づける
         form = PostForm(querydict)
 
         if form.is_valid():
@@ -305,6 +314,7 @@ def post_create(request):
             return redirect("user_home", username=request.user.username)
         else:
             context["form"] = form
+            print(form.errors.as_data())
             return render(request, "articleapp/post_create.html", context, status=400)
 
     form = PostForm()
