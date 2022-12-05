@@ -27,4 +27,4 @@ class AccountUpdateForm(ModelForm):
 class PostForm(ModelForm):
     class Meta:
         model = Post
-        fields = ["title", "slug", "tags", "body"]
+        fields = ["title", "slug", "tags", "body", "user"]

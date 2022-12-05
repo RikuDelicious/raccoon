@@ -294,11 +294,13 @@ def post_create(request):
     context = {}
 
     if request.method == "POST":
-        form = PostForm(request.POST)
+        # QueryDictにuserフィールドの値を加える
+        querydict = request.POST.copy()
+        querydict["user"] = request.user
+        form = PostForm(querydict)
+
         if form.is_valid():
-            post = form.save()
-            post.user = request.user
-            post.save()
+            form.save()
             return redirect("user_home", username=request.user.username)
         else:
             context["form"] = form
