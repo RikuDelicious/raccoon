@@ -46,6 +46,7 @@ urlpatterns = [
         ),
         name="password_change",
     ),
+    path("deactivate/", views.deactivate, name="deactivate"),
     # ユーザー関連ページ（先頭が任意のユーザー名のため末尾にまとめる）
     path("<str:username>/home/", views.user_home, name="user_home"),
     path(

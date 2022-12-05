@@ -15,6 +15,12 @@ def generate_random_slug():
     return "".join(random_chars)
 
 
+def generate_random_password():
+    seed = string.ascii_lowercase + string.digits
+    random_chars = random.choices(seed, k=32)
+    return "".join(random_chars)
+
+
 # Create your models here.
 class User(AbstractUser):
     display_name = models.CharField(
@@ -37,6 +43,14 @@ class User(AbstractUser):
             "unique": _("A user with that username already exists."),
         },
     )
+
+    def deactivate(self):
+        self.is_active = False
+        self.display_name = None
+        self.post_set.all().delete()
+        self.profile_image.delete(save=False)
+        self.set_password(generate_random_password())  # パスワードをランダムに上書きして復元不可にする
+        self.save()
 
 
 class Post(models.Model):
