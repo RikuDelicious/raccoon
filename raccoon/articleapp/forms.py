@@ -24,6 +24,7 @@ class AccountUpdateForm(ModelForm):
         model = User
         fields = ["username"]
 
+
 class PostForm(ModelForm):
     class Meta:
         model = Post

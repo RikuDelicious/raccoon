@@ -289,6 +289,7 @@ def deactivate(request):
         return redirect("index")
     return render(request, "articleapp/deactivate.html")
 
+
 @login_required
 def post_create(request):
     context = {}
@@ -305,7 +306,7 @@ def post_create(request):
         else:
             context["form"] = form
             return render(request, "articleapp/post_create.html", context, status=400)
-    
+
     form = PostForm()
     context["form"] = form
     return render(request, "articleapp/post_create.html", context)
