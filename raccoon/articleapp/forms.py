@@ -1,7 +1,8 @@
+from django import forms
 from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.forms import ModelForm
 
-from .models import User, Post
+from .models import Post, User
 from .widgets import ClearableFileInput
 
 
@@ -26,6 +27,7 @@ class AccountUpdateForm(ModelForm):
 
 
 class PostForm(ModelForm):
+    tags_text = forms.CharField(max_length=200, required=False)
     class Meta:
         model = Post
         fields = ["title", "slug", "tags", "body", "user"]
