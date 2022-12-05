@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib.auth.views import LoginView, LogoutView
-from django.urls import path
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
+from django.urls import path, reverse_lazy
 from django.views.generic.base import RedirectView
 
 from . import views
@@ -37,6 +37,14 @@ urlpatterns = [
         views.user_settings,
         name="user_settings_account",
         kwargs={"current_menu_item": "account"},
+    ),
+    path(
+        "password_change/",
+        PasswordChangeView.as_view(
+            template_name="articleapp/password_change.html",
+            success_url=reverse_lazy("user_settings_account"),
+        ),
+        name="password_change",
     ),
     # ユーザー関連ページ（先頭が任意のユーザー名のため末尾にまとめる）
     path("<str:username>/home/", views.user_home, name="user_home"),
