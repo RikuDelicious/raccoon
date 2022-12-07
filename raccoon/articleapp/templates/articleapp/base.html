@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock title %}</title>
     {% tailwind_css %}
+    {% block styles %}{% endblock styles %}
 </head>
 
 <body class="bg-[#171717]">
@@ -32,7 +33,7 @@
                         <ul class="text-left">
                             <li><a href="{% url 'user_home' username=request.user.username %}" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline">マイページ</a></li>
                             <li><a href="{% url 'user_settings' %}" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline">設定</a></li>
-                            <li><a href="" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline">新規投稿</a></li>
+                            <li><a href="{% url 'post_create' %}" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline">新規投稿</a></li>
                             <li>
                                 <form action="{% url 'logout' %}" method="post">
                                     {% csrf_token %}
@@ -54,7 +55,7 @@
     <div class="h-14 mb-8">
         <!-- ヘッダースペース -->
     </div>
-    <div id="main" class="max-w-[1120px] mx-auto mb-10 px-3">
+    <div id="main" class="mb-10 px-3">
         {% block main %}{% endblock main %}
     </div>
 

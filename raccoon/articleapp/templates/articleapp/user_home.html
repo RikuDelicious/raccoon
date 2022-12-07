@@ -3,8 +3,8 @@
 {% block title %}{{ user_to_display.username }}{% endblock title %}
 
 {% block main %}
-
-<div class="py-6 px-2 bg-[#091F2C] border border-[#D2D2D2] flex flex-col items-center mb-10">
+<div class="max-w-[1120px] mx-auto">
+    <div class="py-6 px-2 bg-[#091F2C] border border-[#D2D2D2] flex flex-col items-center mb-10">
         <div class="mb-2">
             <img src="{% if user_to_display.profile_image %}{{ user_to_display.profile_image.url }}{% endif %}"
                 alt="" class="w-20 h-20 rounded-full object-cover">
@@ -20,55 +20,55 @@
         <div class="text-[#E6E6E6]">
             投稿数: {{ post_list_page.paginator.count }}
         </div>
-</div>
+    </div>
 
-<div class="flex mb-6 gap-2">
-    <h2 class="text-3xl font-bold text-[#E6E6E6]">投稿</h2>
+    <div class="flex mb-6 gap-2">
+        <h2 class="text-3xl font-bold text-[#E6E6E6]">投稿</h2>
+        {% if is_logged_in_user_home %}
+        <a href="" class="bg-[#75B6E7] text-[#000000] hover:bg-[#278CDA] hover:underline font-bold rounded-md py-2 px-4">
+            + 新規投稿
+        </a>
+        {% endif %}
+    </div>
+
     {% if is_logged_in_user_home %}
-    <a href="" class="bg-[#75B6E7] text-[#000000] hover:bg-[#278CDA] hover:underline font-bold rounded-md py-2 px-4">
-        + 新規投稿
-    </a>
-    {% endif %}
-</div>
-
-{% if is_logged_in_user_home %}
-    <div class="mb-2 flex">
-        {% if drafts %}
-            <a href="{% url 'user_home' username=request.user.username %}">
-                <div class="text-[#75B6E7] hover:text-[#278CDA] hover:underline 
-                            hover:decoration-[#278CDA] border-2 border-[#2B2B2B]
-                            py-1 px-4 box-border rounded-l-lg">
-                    公開中
-                </div>
-            </a>
-            <div class="text-[#E6E6E6] bg-[#2B2B2B] border-2 border-[#2B2B2B]
-                        py-1 px-4 box-border rounded-r-lg">
-                下書き
-            </div>
-        {% else %}
-            <div class="text-[#E6E6E6] bg-[#2B2B2B] border-2 border-[#2B2B2B]
-                        py-1 px-4 box-border rounded-l-lg">
-                公開中
-            </div>
-            <a href="{% url 'user_home_drafts' username=request.user.username %}">
-                <div class="text-[#75B6E7] hover:text-[#278CDA] hover:underline 
-                            hover:decoration-[#278CDA] border-2 border-[#2B2B2B]
+        <div class="mb-2 flex">
+            {% if drafts %}
+                <a href="{% url 'user_home' username=request.user.username %}">
+                    <div class="text-[#75B6E7] hover:text-[#278CDA] hover:underline 
+                                hover:decoration-[#278CDA] border-2 border-[#2B2B2B]
+                                py-1 px-4 box-border rounded-l-lg">
+                        公開中
+                    </div>
+                </a>
+                <div class="text-[#E6E6E6] bg-[#2B2B2B] border-2 border-[#2B2B2B]
                             py-1 px-4 box-border rounded-r-lg">
                     下書き
                 </div>
-            </a>
-        {% endif %}
+            {% else %}
+                <div class="text-[#E6E6E6] bg-[#2B2B2B] border-2 border-[#2B2B2B]
+                            py-1 px-4 box-border rounded-l-lg">
+                    公開中
+                </div>
+                <a href="{% url 'user_home_drafts' username=request.user.username %}">
+                    <div class="text-[#75B6E7] hover:text-[#278CDA] hover:underline 
+                                hover:decoration-[#278CDA] border-2 border-[#2B2B2B]
+                                py-1 px-4 box-border rounded-r-lg">
+                        下書き
+                    </div>
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <!-- post_list -->
+    <div>
+        {% include "articleapp/snippets/post_list.html" with posts=post_list_page.object_list %}
     </div>
-{% endif %}
 
-<!-- post_list -->
-<div>
-    {% include "articleapp/snippets/post_list.html" with posts=post_list_page.object_list %}
+    <!-- pagination nav -->
+    <div class="border-t border-t-[#D2D2D2] pt-10 mb-6">
+        {% include "articleapp/snippets/pagination_nav.html" with page=post_list_page pagination_nav=post_list_pagination_nav %}
+    </div>
 </div>
-
-<!-- pagination nav -->
-<div class="border-t border-t-[#D2D2D2] pt-10 mb-6">
-    {% include "articleapp/snippets/pagination_nav.html" with page=post_list_page pagination_nav=post_list_pagination_nav %}
-</div>
-
 {% endblock main %}

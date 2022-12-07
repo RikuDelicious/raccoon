@@ -1,0 +1,68 @@
+{% extends 'articleapp/base.html' %}
+{% load static %}
+
+{% block title %}新規投稿{% endblock title %}
+
+{% block styles %}
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/an-old-hope.min.css">
+{% endblock styles %}
+
+{% block main %}
+<form action="{% url 'post_create' %}" method="post" class="form_general" id="post_form">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% include 'articleapp/snippets/field.html' with field=form.title %}
+    <div class="grid grid-cols-2 gap-2">
+        {% include 'articleapp/snippets/field.html' with field=form.tags_text %}
+        {% include 'articleapp/snippets/field.html' with field=form.slug %}
+    </div>
+    <div id="body_panel" class="mb-4">
+        <div class="grid grid-cols-2 gap-2">
+            <div>
+                <div class="flex items-center mb-1">
+                    {% if form.body.errors %}
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-1 text-[#FF0000]">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                    </svg>
+                    {% endif %}
+                    {{ form.body.label_tag }}
+                </div>
+                {% if form.body.errors %}
+                    <div class=" mb-1">
+                        {{ form.body.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="text-[#E6E6E6] font-bold">プレビュー:</div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+            <div class="h-[calc(100vh-384px)] [&>textarea]:h-full">
+                {{ form.body }}
+            </div>
+            <div class="post_body h-[calc(100vh-384px)] overflow-y-auto" id="body_preview">
+            </div>
+        </div>
+    </div>
+    <div class="flex justify-end">
+        <div>
+            <div class="flex justify-end">
+                <input type="button" value="送信" id="post_submit_button" class="self-start bg-[#75B6E7] text-[#000000] hover:bg-[#278CDA] hover:underline font-bold rounded-l-md py-2 px-4 hover:cursor-pointer">
+                <div class="[&>select]:h-10 [&>select]:bg-[#75B6E7] [&>select]:rounded-r-md font-bold">{{ form.save_option }}</div>
+            </div>
+            {% if form.save_option.errors %}
+                <div>
+                    {{ form.save_option.errors }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</form>
+{% endblock main %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script src="{% static 'articleapp/post_create.js' %}"></script>
+{% endblock scripts %}
+

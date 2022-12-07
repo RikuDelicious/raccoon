@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* jqueryで生成した要素及びFormで生成される要素にtailwindのスタイルを直接適用できないため、
+/* javascriptで生成した要素及びFormで生成される要素にtailwindのスタイルを直接適用できないため、
 例外的に本スタイルシートで予め作成しておく。 */
 
 /* 検索ページのフィルタフォーム用のスタイル */
@@ -24,11 +24,56 @@
         @apply font-bold text-[#E6E6E6];
     }
 
-    input[type="text"], input[type="password"] {
+    input[type="text"], input[type="password"], textarea {
         @apply bg-[#2B2B2B] border-[#D2D2D2] focus:border-[#D2D2D2] rounded-md text-[#E6E6E6] w-[100%];
     }
 
     .errorlist {
         @apply text-[#FF0000];
+    }
+}
+
+/* 投稿本文（マークダウン）のスタイル */
+.post_body {
+    @apply text-[#E6E6E6];
+
+    h1 {
+        @apply text-3xl font-bold border-b border-[#D2D2D2] my-8 pb-2;
+    }
+
+    h2 {
+        @apply text-2xl font-bold border-b border-[#D2D2D2] my-8 pb-1;
+    }
+
+    h3 {
+        @apply text-xl font-bold mb-6;
+    }
+
+    p {
+        @apply mb-3;
+    }
+
+    p code {
+        @apply bg-[#2B2B2B] px-1 py-1 mx-1 rounded;
+    }
+
+    a {
+        @apply text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA] mx-1;
+    }
+
+    ul {
+        @apply my-3 list-disc list-inside;
+    }
+
+    ol {
+        @apply my-3 list-decimal list-inside;
+    }
+
+    ul li, ol li {
+        @apply mb-2;
+    }
+
+    pre code {
+        @apply my-3;
     }
 }

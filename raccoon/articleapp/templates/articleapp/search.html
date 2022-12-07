@@ -2,144 +2,145 @@
 {% load static %}
 
 {% block main %}
-<h1 class="text-4xl font-bold text-[#E6E6E6] mb-10">
-    {% if request.GET.title %}
-    {{ request.GET.title }}
-    {% else %}
-    記事を検索
-    {% endif %}
-</h1>
-
-<!-- フィルタ用フォーム -->
-<form id="filter_form" action="{% url 'search' %}" method="get">
-    <div class="mb-2">
-        <input type="text" placeholder="記事を検索" name="keyword" value="{{ request.GET.keyword }}"
-            class="mr-1 w-full max-w-[560px] bg-transparent border-[#D2D2D2] focus:border-[#D2D2D2] rounded-md text-[#E6E6E6]">
-        <input type="button" value="検索" id="search_button"
-            class="bg-[#75B6E7] text-[#000000] hover:bg-[#278CDA] hover:underline font-bold rounded-md py-2 px-4">
-    </div>
-    <button type="button" id="button_filter_accordion"
-        class="px-2 py-1 rounded-md flex font-bold text-[#E6E6E6] mb-2 hover:bg-[#2B2B2B]">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-6 h-6 mr-1">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        フィルタ
-    </button>
-
-    <div class=" grid grid-cols-3 gap-x-8">
-        <!-- フィルタヘッダー: 期間 -->
+<div class="max-w-[1120px] mx-auto">
+    <h1 class="text-4xl font-bold text-[#E6E6E6] mb-10">
+        {% if request.GET.title %}
+        {{ request.GET.title }}
+        {% else %}
+        記事を検索
+        {% endif %}
+    </h1>
+    
+    <!-- フィルタ用フォーム -->
+    <form id="filter_form" action="{% url 'search' %}" method="get">
         <div class="mb-2">
-            <p class="text-[#E6E6E6] font-bold">
-                <span class="mr-1">投稿日:</span>
-                <span id="period_filter_start"></span>
-                <span> ~ </span>
-                <span id="period_filter_end"></span>
-            </p>
+            <input type="text" placeholder="記事を検索" name="keyword" value="{{ request.GET.keyword }}"
+                class="mr-1 w-full max-w-[560px] bg-transparent border-[#D2D2D2] focus:border-[#D2D2D2] rounded-md text-[#E6E6E6]">
+            <input type="button" value="検索" id="search_button"
+                class="bg-[#75B6E7] text-[#000000] hover:bg-[#278CDA] hover:underline font-bold rounded-md py-2 px-4">
         </div>
-
-        <!-- フィルタヘッダー: タグ -->
-        <div class="flex mb-2">
-            <p class="text-[#E6E6E6] whitespace-nowrap font-bold">タグ: </p>
-            <ul id="tag_filter_list" class="px-1 pb-1 flex flex-wrap gap-1">
-            </ul>
-        </div>
-
-        <!-- フィルタヘッダー: 並び順 -->
-        <div class="mb-2">
-            <p class="text-[#E6E6E6] font-bold">
-                <span class="mr-1">並び順:</span>
-                <span id="sort_filter"></span>
-            </p>
-        </div>
-
-        <!-- フィルタ入力欄: 期間 -->
-        <div id="filter_period_input" class="py-4 border-t border-t-[#D2D2D2]" style="display: none;">
-            <fieldset class="text-[#5D5C5C] min-w-0">
-                <div class="flex items-center mb-2">
-                    <input id="period_unspecified" type="radio" name="period" class="peer mr-1" value="period_unspecified" checked>
-                    <label for="period_unspecified" class="peer-checked:text-[#E6E6E6]">指定なし</label>
-                </div>
-                <div class="flex items-center mb-2">
-                    <input id="today" type="radio" name="period" class="peer mr-1" value="today">
-                    <label for="today" class="peer-checked:text-[#E6E6E6]">今日</label>
-                </div>
-                <div class="flex items-center mb-2">
-                    <input id="thisweek" type="radio" name="period" class="peer mr-1" value="thisweek">
-                    <label for="thisweek" class="peer-checked:text-[#E6E6E6]">今週</label>
-                </div>
-                <div class="flex items-center mb-2">
-                    <input id="thismonth" type="radio" name="period" class="peer mr-1" value="thismonth">
-                    <label for="thismonth" class="peer-checked:text-[#E6E6E6]">今月</label>
-                </div>
-                <div class="flex items-center mb-2">
-                    <input id="thisyear" type="radio" name="period" class="peer mr-1" value="thisyear">
-                    <label for="thisyear" class="peer-checked:text-[#E6E6E6]">今年</label>
-                </div>
-                <div>
-                    <div class="flex items-center mb-2">
-                        <input id="specify_period" type="radio" name="period" class="peer mr-1" value="specify_period">
-                        <label for="specify_period" class="peer-checked:text-[#E6E6E6]">期間</label>
-                    </div>
-                    <div class="mt-4">
-                        <div class="mb-1">
-                            <label for="period_start_date">開始:</label>
-                            <input id="period_start_date" type="date" disabled
-                                class="inline-block max-w-full h-8 bg-[#2B2B2B] border-[#D2D2D2]">
-                        </div>
-                        <div>
-                            <label for="period_end_date">終了:</label>
-                            <input id="period_end_date" type="date" disabled
-                                class="inline-block max-w-full h-8 bg-[#2B2B2B] border-[#D2D2D2]">
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-
-        <!-- フィルタ入力欄: タグ -->
-        <div id="filter_tag_input" class="py-4 px-2 text-[#E6E6E6] border-t border-t-[#D2D2D2]" style="display: none;">
-            <div class="flex flex-col justify-start items-stretch bg-[#2B2B2B] p-4">
-                <input id="tag_search_text" type="text" data-url="{% url 'search_tags' %}" placeholder="タグを検索"
-                    class="max-w-full mb-2 bg-transparent border-[#5D5C5C] focus:border-[#5D5C5C] rounded-md text-[#E6E6E6]">
-                <ul id="tag_search_list" class="h-[150px] overflow-auto">
+        <button type="button" id="button_filter_accordion"
+            class="px-2 py-1 rounded-md flex font-bold text-[#E6E6E6] mb-2 hover:bg-[#2B2B2B]">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                class="w-6 h-6 mr-1">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            フィルタ
+        </button>
+    
+        <div class=" grid grid-cols-3 gap-x-8">
+            <!-- フィルタヘッダー: 期間 -->
+            <div class="mb-2">
+                <p class="text-[#E6E6E6] font-bold">
+                    <span class="mr-1">投稿日:</span>
+                    <span id="period_filter_start"></span>
+                    <span> ~ </span>
+                    <span id="period_filter_end"></span>
+                </p>
+            </div>
+    
+            <!-- フィルタヘッダー: タグ -->
+            <div class="flex mb-2">
+                <p class="text-[#E6E6E6] whitespace-nowrap font-bold">タグ: </p>
+                <ul id="tag_filter_list" class="px-1 pb-1 flex flex-wrap gap-1">
                 </ul>
             </div>
+    
+            <!-- フィルタヘッダー: 並び順 -->
+            <div class="mb-2">
+                <p class="text-[#E6E6E6] font-bold">
+                    <span class="mr-1">並び順:</span>
+                    <span id="sort_filter"></span>
+                </p>
+            </div>
+    
+            <!-- フィルタ入力欄: 期間 -->
+            <div id="filter_period_input" class="py-4 border-t border-t-[#D2D2D2]" style="display: none;">
+                <fieldset class="text-[#5D5C5C] min-w-0">
+                    <div class="flex items-center mb-2">
+                        <input id="period_unspecified" type="radio" name="period" class="peer mr-1" value="period_unspecified" checked>
+                        <label for="period_unspecified" class="peer-checked:text-[#E6E6E6]">指定なし</label>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <input id="today" type="radio" name="period" class="peer mr-1" value="today">
+                        <label for="today" class="peer-checked:text-[#E6E6E6]">今日</label>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <input id="thisweek" type="radio" name="period" class="peer mr-1" value="thisweek">
+                        <label for="thisweek" class="peer-checked:text-[#E6E6E6]">今週</label>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <input id="thismonth" type="radio" name="period" class="peer mr-1" value="thismonth">
+                        <label for="thismonth" class="peer-checked:text-[#E6E6E6]">今月</label>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <input id="thisyear" type="radio" name="period" class="peer mr-1" value="thisyear">
+                        <label for="thisyear" class="peer-checked:text-[#E6E6E6]">今年</label>
+                    </div>
+                    <div>
+                        <div class="flex items-center mb-2">
+                            <input id="specify_period" type="radio" name="period" class="peer mr-1" value="specify_period">
+                            <label for="specify_period" class="peer-checked:text-[#E6E6E6]">期間</label>
+                        </div>
+                        <div class="mt-4">
+                            <div class="mb-1">
+                                <label for="period_start_date">開始:</label>
+                                <input id="period_start_date" type="date" disabled
+                                    class="inline-block max-w-full h-8 bg-[#2B2B2B] border-[#D2D2D2]">
+                            </div>
+                            <div>
+                                <label for="period_end_date">終了:</label>
+                                <input id="period_end_date" type="date" disabled
+                                    class="inline-block max-w-full h-8 bg-[#2B2B2B] border-[#D2D2D2]">
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+    
+            <!-- フィルタ入力欄: タグ -->
+            <div id="filter_tag_input" class="py-4 px-2 text-[#E6E6E6] border-t border-t-[#D2D2D2]" style="display: none;">
+                <div class="flex flex-col justify-start items-stretch bg-[#2B2B2B] p-4">
+                    <input id="tag_search_text" type="text" data-url="{% url 'search_tags' %}" placeholder="タグを検索"
+                        class="max-w-full mb-2 bg-transparent border-[#5D5C5C] focus:border-[#5D5C5C] rounded-md text-[#E6E6E6]">
+                    <ul id="tag_search_list" class="h-[150px] overflow-auto">
+                    </ul>
+                </div>
+            </div>
+    
+            <!-- フィルタ入力欄: 並び順 -->
+            <ul id="filter_sort_input" class="py-4 text-[#5D5C5C] border-t border-t-[#D2D2D2]" style="display: none;">
+                <fieldset class="text-[#5D5C5C] min-w-0">
+                    <div class="flex items-center mb-2">
+                        <input id="date_publish_desc" type="radio" name="sort" class="peer mr-1" value="date_publish_desc">
+                        <label for="date_publish_desc" class="peer-checked:text-[#E6E6E6]">新着順</label>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <input id="date_publish_asc" type="radio" name="sort" class="peer mr-1" value="date_publish_asc">
+                        <label for="date_publish_asc" class="peer-checked:text-[#E6E6E6]">古い順</label>
+                    </div>
+                </fieldset>
+            </ul>
         </div>
-
-        <!-- フィルタ入力欄: 並び順 -->
-        <ul id="filter_sort_input" class="py-4 text-[#5D5C5C] border-t border-t-[#D2D2D2]" style="display: none;">
-            <fieldset class="text-[#5D5C5C] min-w-0">
-                <div class="flex items-center mb-2">
-                    <input id="date_publish_desc" type="radio" name="sort" class="peer mr-1" value="date_publish_desc">
-                    <label for="date_publish_desc" class="peer-checked:text-[#E6E6E6]">新着順</label>
-                </div>
-                <div class="flex items-center mb-2">
-                    <input id="date_publish_asc" type="radio" name="sort" class="peer mr-1" value="date_publish_asc">
-                    <label for="date_publish_asc" class="peer-checked:text-[#E6E6E6]">古い順</label>
-                </div>
-            </fieldset>
-        </ul>
+    </form>
+    
+    <!-- pagination nav -->
+    <div class="border-t border-t-[#D2D2D2] pt-10 mb-6">
+        {% include "articleapp/snippets/pagination_nav.html" with page=post_list_page pagination_nav=post_list_pagination_nav %}
     </div>
-</form>
-
-<!-- pagination nav -->
-<div class="border-t border-t-[#D2D2D2] pt-10 mb-6">
-    {% include "articleapp/snippets/pagination_nav.html" with page=post_list_page pagination_nav=post_list_pagination_nav %}
+    
+    
+    <!-- post_list -->
+    <div>
+        {% include "articleapp/snippets/post_list.html" with posts=post_list_page.object_list %}
+    </div>
+    
+    <!-- pagination nav -->
+    <div class="border-t border-t-[#D2D2D2] pt-10 mb-6">
+        {% include "articleapp/snippets/pagination_nav.html" with page=post_list_page pagination_nav=post_list_pagination_nav %}
+    </div>
 </div>
-
-
-<!-- post_list -->
-<div>
-    {% include "articleapp/snippets/post_list.html" with posts=post_list_page.object_list %}
-</div>
-
-<!-- pagination nav -->
-<div class="border-t border-t-[#D2D2D2] pt-10 mb-6">
-    {% include "articleapp/snippets/pagination_nav.html" with page=post_list_page pagination_nav=post_list_pagination_nav %}
-</div>
-
 {% endblock main %}
 
 {% block scripts %}

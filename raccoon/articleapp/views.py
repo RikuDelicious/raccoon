@@ -2,14 +2,16 @@ import datetime
 import random
 
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-from django.contrib.auth.decorators import login_required
 
-from .forms import UserCreationForm, ProfileUpdateForm, AccountUpdateForm
+from .forms import (AccountUpdateForm, PostForm, ProfileUpdateForm,
+                    UserCreationForm)
 from .models import Post, Tag, User
 from .utils.pagination import create_navigation_context_from_page
 
@@ -29,7 +31,8 @@ def index(request):
         tags_sample.append(tags[index])
 
     # Postの新着5件を取得
-    posts = Post.objects.filter(is_published=True).order_by("-date_publish")[0:5]
+    # デフォルトの並び順は投稿日の降順→created_atの降順
+    posts = Post.objects.filter(is_published=True)[0:5]
 
     return render(
         request, "articleapp/index.html", {"posts": posts, "tags": tags_sample}
@@ -90,8 +93,7 @@ def search(request):
             )
 
     # フィルタ: 並び順
-    # デフォルトは投稿日の降順
-    queryset = queryset.order_by("-date_publish")
+    # デフォルトの並び順は投稿日の降順→created_atの降順
     if "sort" in querydict:
         sort_value = querydict["sort"]
         if sort_value == "date_publish_desc":
@@ -288,3 +290,50 @@ def deactivate(request):
 
         return redirect("index")
     return render(request, "articleapp/deactivate.html")
+
+
+@login_required
+def post_create(request):
+    context = {}
+
+    if request.method == "POST":
+        querydict = request.POST.copy()
+        # QueryDictにuserフィールドの値を加える
+        querydict["user"] = request.user
+
+        # tagsフィールドにタグのリストをセットする
+        tags_text = querydict["tags_text"].split()
+        # 最大文字数を越えるタグが含まれていたらタグの取得・生成を行わずにエラーとする
+        tag_name_max_length = Tag._meta.get_field("name").max_length
+        has_invalid_length_tag = False  # 最大数を越えるタグが含まれているかをフラグで保持する
+        if any([len(tag_text) > tag_name_max_length for tag_text in tags_text]):
+            has_invalid_length_tag = True
+        else:
+            tags = [
+                Tag.objects.get_or_create(name=tag_text)[0].id for tag_text in tags_text
+            ]
+            querydict.setlist("tags", tags)
+
+        # フォームにデータを紐づける
+        form = PostForm(querydict)
+        if has_invalid_length_tag:
+            form.add_error(
+                "tags_text", ValidationError("1つのタグの文字数は最大100文字までです。", code="invalid")
+            )
+
+        if form.is_valid():
+            post = form.save()
+            next_url_name = "user_home"
+            if form.cleaned_data["save_option"] == "save_and_publish":
+                post.publish()
+                next_url_name = "user_home"
+            elif form.cleaned_data["save_option"] == "save_as_draft":
+                next_url_name = "user_home_drafts"
+            return redirect(next_url_name, username=request.user.username)
+        else:
+            context["form"] = form
+            return render(request, "articleapp/post_create.html", context, status=400)
+
+    form = PostForm()
+    context["form"] = form
+    return render(request, "articleapp/post_create.html", context)

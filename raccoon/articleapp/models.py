@@ -1,3 +1,4 @@
+import datetime
 import random
 import string
 
@@ -5,7 +6,6 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import ASCIIUsernameValidator
 from django.db import models
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -52,23 +52,29 @@ class User(AbstractUser):
         self.set_password(generate_random_password())  # パスワードをランダムに上書きして復元不可にする
         self.save()
 
+    class Meta(AbstractUser.Meta):
+        verbose_name = "ユーザー"
+        verbose_name_plural = "ユーザー"
+
 
 class Post(models.Model):
-    title = models.CharField(max_length=200)
-    body = models.TextField()
+    title = models.CharField(max_length=200, verbose_name="タイトル")
+    body = models.TextField(verbose_name="本文", blank=True)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    slug = models.SlugField(default=generate_random_slug)
-    tags = models.ManyToManyField(to="Tag", blank=True)
+    slug = models.SlugField(default=generate_random_slug, verbose_name="スラッグ")
+    tags = models.ManyToManyField(to="Tag", blank=True, verbose_name="タグ")
     is_published = models.BooleanField(default=False)
     date_publish = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["-date_publish", "created_at"]
+        ordering = ["-date_publish", "-created_at"]
         constraints = [
             models.UniqueConstraint(fields=["user", "slug"], name="unique_user_slug"),
         ]
+        verbose_name = "投稿"
+        verbose_name_plural = "投稿"
 
     def __str__(self):
         return self.title
@@ -80,7 +86,7 @@ class Post(models.Model):
         if self.is_published:
             return
         self.is_published = True
-        self.date_publish = timezone.now().date()
+        self.date_publish = datetime.datetime.now().date()
         self.save()
 
     def get_absolute_url(self):
@@ -92,3 +98,7 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = "タグ"
+        verbose_name_plural = "タグ"
