@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* jqueryで生成した要素及びFormで生成される要素にtailwindのスタイルを直接適用できないため、
+/* javascriptで生成した要素及びFormで生成される要素にtailwindのスタイルを直接適用できないため、
 例外的に本スタイルシートで予め作成しておく。 */
 
 /* 検索ページのフィルタフォーム用のスタイル */
@@ -30,5 +30,30 @@
 
     .errorlist {
         @apply text-[#FF0000];
+    }
+}
+
+/* 投稿本文（マークダウン）のスタイル */
+.post_body {
+    @apply text-[#E6E6E6];
+
+    h1 {
+        @apply text-3xl font-bold border-b border-[#D2D2D2] mb-8 pb-2;
+    }
+
+    h2 {
+        @apply text-2xl font-bold border-b border-[#D2D2D2] mb-8 pb-1;
+    }
+
+    h3 {
+        @apply text-xl font-bold mb-6;
+    }
+
+    p {
+        @apply mb-3;
+    }
+
+    code {
+        @apply mb-3;
     }
 }

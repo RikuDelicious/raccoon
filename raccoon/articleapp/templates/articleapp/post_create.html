@@ -1,20 +1,43 @@
 {% extends 'articleapp/base.html' %}
+{% load static %}
 
 {% block title %}新規投稿{% endblock title %}
+
+{% block styles %}
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/an-old-hope.min.css">
+{% endblock styles %}
 
 {% block main %}
 
 <div class="">
     <h1 class="text-4xl font-bold text-[#E6E6E6] mb-10">新規投稿</h1>
 
-    <form action="{% url 'post_create' %}" method="post" class="form_general">
+    <form action="{% url 'post_create' %}" method="post" class="form_general" id="post_form">
         {% csrf_token %}
         {{ form.non_field_errors }}
         {% include 'articleapp/snippets/field.html' with field=form.title %}
         {% include 'articleapp/snippets/field.html' with field=form.tags_text %}
         {% include 'articleapp/snippets/field.html' with field=form.slug %}
-        {% include 'articleapp/snippets/field.html' with field=form.body %}
+        <div id="body_panel">
+            <div>
+                {% include 'articleapp/snippets/field.html' with field=form.body %}
+            </div>
+            <div>
+                <div class="text-[#E6E6E6] font-bold">プレビュー:</div>
+                <div id="body_preview" class="post_body"></div>
+            </div>
+        </div>
         <input type="submit" value="登録する" class="bg-[#75B6E7] text-[#000000] hover:bg-[#278CDA] hover:underline font-bold rounded-md py-2 px-4 hover:cursor-pointer">
     </form>
+
+    
 </div>
 {% endblock main %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script src="{% static 'articleapp/post_create.js' %}"></script>
+{% endblock scripts %}
+
