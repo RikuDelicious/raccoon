@@ -322,7 +322,12 @@ def post_create(request):
             )
 
         if form.is_valid():
-            form.save()
+            post = form.save()
+            if form.cleaned_data["save_option"] == "save_and_publish":
+                post.publish()
+            elif form.cleaned_data["save_option"] == "save_as_draft":
+                # 何もしない
+                pass
             return redirect("user_home", username=request.user.username)
         else:
             context["form"] = form
