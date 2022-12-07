@@ -2,14 +2,15 @@ import datetime
 import random
 
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-from django.contrib.auth.decorators import login_required
 
-from .forms import UserCreationForm, ProfileUpdateForm, AccountUpdateForm, PostForm
+from .forms import (AccountUpdateForm, PostForm, ProfileUpdateForm,
+                    UserCreationForm)
 from .models import Post, Tag, User
 from .utils.pagination import create_navigation_context_from_page
 
@@ -301,10 +302,14 @@ def post_create(request):
 
         # tagsフィールドにタグのリストをセットする
         tags_text = querydict["tags_text"].split()
-        tags = [
-            Tag.objects.get_or_create(name=tag_text)[0].id for tag_text in tags_text
-        ]
-        querydict.setlist("tags", tags)
+        # 最大文字数を越えるタグが含まれていたらタグの取得・生成を行わずにエラーとする
+        tag_name_max_length = Tag._meta.get_field("name").max_length
+        if any([len(tag_text) > tag_name_max_length for tag_text in tags_text]):
+            # TODO: ValidationErrorを投げるようにする
+            pass
+        else:
+            tags = [Tag.objects.get_or_create(name=tag_text)[0].id for tag_text in tags_text]
+            querydict.setlist("tags", tags)
 
         # フォームにデータを紐づける
         form = PostForm(querydict)
@@ -314,7 +319,6 @@ def post_create(request):
             return redirect("user_home", username=request.user.username)
         else:
             context["form"] = form
-            print(form.errors.as_data())
             return render(request, "articleapp/post_create.html", context, status=400)
 
     form = PostForm()
