@@ -35,7 +35,7 @@ POST_SAVE_OPTION_CHOICES = [
 class PostForm(ModelForm):
     tags_text = forms.CharField(max_length=200, required=False, label="タグ")
     save_option = forms.ChoiceField(
-        choices=POST_SAVE_OPTION_CHOICES, initial=POST_SAVE_OPTION_CHOICES[0][0]
+        choices=POST_SAVE_OPTION_CHOICES, initial=POST_SAVE_OPTION_CHOICES[1][0]
     )
 
     class Meta:
