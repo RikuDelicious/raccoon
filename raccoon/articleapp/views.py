@@ -323,12 +323,13 @@ def post_create(request):
 
         if form.is_valid():
             post = form.save()
+            next_url_name = "user_home"
             if form.cleaned_data["save_option"] == "save_and_publish":
                 post.publish()
+                next_url_name = "user_home"
             elif form.cleaned_data["save_option"] == "save_as_draft":
-                # 何もしない
-                pass
-            return redirect("user_home", username=request.user.username)
+                next_url_name = "user_home_drafts"
+            return redirect(next_url_name, username=request.user.username)
         else:
             context["form"] = form
             return render(request, "articleapp/post_create.html", context, status=400)
