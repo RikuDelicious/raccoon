@@ -1,3 +1,4 @@
+import datetime
 import random
 import string
 
@@ -5,7 +6,6 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import ASCIIUsernameValidator
 from django.db import models
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -86,7 +86,7 @@ class Post(models.Model):
         if self.is_published:
             return
         self.is_published = True
-        self.date_publish = timezone.now().date()
+        self.date_publish = datetime.datetime.now().date()
         self.save()
 
     def get_absolute_url(self):
