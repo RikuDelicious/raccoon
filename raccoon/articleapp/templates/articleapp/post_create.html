@@ -45,10 +45,18 @@
         </div>
     </div>
     <div class="flex justify-end">
-        <input type="submit" value="送信" class="self-start bg-[#75B6E7] text-[#000000] hover:bg-[#278CDA] hover:underline font-bold rounded-l-md py-2 px-4 hover:cursor-pointer">
-        <div class="[&>select]:h-10 [&>select]:bg-[#75B6E7] [&>select]:rounded-r-md font-bold">{{ form.save_option }}</div>
+        <div>
+            <div class="flex justify-end">
+                <input type="submit" value="送信" class="self-start bg-[#75B6E7] text-[#000000] hover:bg-[#278CDA] hover:underline font-bold rounded-l-md py-2 px-4 hover:cursor-pointer">
+                <div class="[&>select]:h-10 [&>select]:bg-[#75B6E7] [&>select]:rounded-r-md font-bold">{{ form.save_option }}</div>
+            </div>
+            {% if form.save_option.errors %}
+                <div>
+                    {{ form.save_option.errors }}
+                </div>
+            {% endif %}
+        </div>
     </div>
-    
 </form>
 {% endblock main %}
 
