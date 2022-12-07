@@ -26,8 +26,17 @@ class AccountUpdateForm(ModelForm):
         fields = ["username"]
 
 
+POST_SAVE_OPTION_CHOICES = [
+    ("save_and_publish", "投稿する"),
+    ("save_as_draft", "下書き保存する"),
+]
+
+
 class PostForm(ModelForm):
     tags_text = forms.CharField(max_length=200, required=False, label="タグ")
+    save_option = forms.ChoiceField(
+        choices=POST_SAVE_OPTION_CHOICES, initial=POST_SAVE_OPTION_CHOICES[0][0]
+    )
 
     class Meta:
         model = Post
