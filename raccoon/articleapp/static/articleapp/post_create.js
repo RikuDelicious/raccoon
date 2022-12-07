@@ -18,5 +18,10 @@
         body_textarea.on('input', (e) => {
             body_preview.html(marked.parse($(e.target).val()));
         });
+
+        /* 送信ボタンの送信イベントをここで実装する */
+        form.find("#post_submit_button").click((e) => {
+            form.submit();
+        });
     });
 }
