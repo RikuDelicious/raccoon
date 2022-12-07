@@ -38,11 +38,11 @@
     @apply text-[#E6E6E6];
 
     h1 {
-        @apply text-3xl font-bold border-b border-[#D2D2D2] mb-8 pb-2;
+        @apply text-3xl font-bold border-b border-[#D2D2D2] my-8 pb-2;
     }
 
     h2 {
-        @apply text-2xl font-bold border-b border-[#D2D2D2] mb-8 pb-1;
+        @apply text-2xl font-bold border-b border-[#D2D2D2] my-8 pb-1;
     }
 
     h3 {
@@ -53,7 +53,27 @@
         @apply mb-3;
     }
 
-    code {
-        @apply mb-3;
+    p code {
+        @apply bg-[#2B2B2B] px-1 py-1 mx-1 rounded;
+    }
+
+    a {
+        @apply text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA] mx-1;
+    }
+
+    ul {
+        @apply my-3 list-disc list-inside;
+    }
+
+    ol {
+        @apply my-3 list-decimal list-inside;
+    }
+
+    ul li, ol li {
+        @apply mb-2;
+    }
+
+    pre code {
+        @apply my-3;
     }
 }
