@@ -3,6 +3,7 @@ import random
 
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.http import JsonResponse
@@ -304,15 +305,21 @@ def post_create(request):
         tags_text = querydict["tags_text"].split()
         # 最大文字数を越えるタグが含まれていたらタグの取得・生成を行わずにエラーとする
         tag_name_max_length = Tag._meta.get_field("name").max_length
+        has_invalid_length_tag = False  # 最大数を越えるタグが含まれているかをフラグで保持する
         if any([len(tag_text) > tag_name_max_length for tag_text in tags_text]):
-            # TODO: ValidationErrorを投げるようにする
-            pass
+            has_invalid_length_tag = True
         else:
-            tags = [Tag.objects.get_or_create(name=tag_text)[0].id for tag_text in tags_text]
+            tags = [
+                Tag.objects.get_or_create(name=tag_text)[0].id for tag_text in tags_text
+            ]
             querydict.setlist("tags", tags)
 
         # フォームにデータを紐づける
         form = PostForm(querydict)
+        if has_invalid_length_tag:
+            form.add_error(
+                "tags_text", ValidationError("1つのタグの文字数は最大100文字までです。", code="invalid")
+            )
 
         if form.is_valid():
             form.save()
