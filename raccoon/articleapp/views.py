@@ -31,7 +31,8 @@ def index(request):
         tags_sample.append(tags[index])
 
     # Postの新着5件を取得
-    posts = Post.objects.filter(is_published=True).order_by("-date_publish")[0:5]
+    # デフォルトの並び順は投稿日の降順→created_atの降順
+    posts = Post.objects.filter(is_published=True)[0:5]
 
     return render(
         request, "articleapp/index.html", {"posts": posts, "tags": tags_sample}
@@ -92,8 +93,7 @@ def search(request):
             )
 
     # フィルタ: 並び順
-    # デフォルトは投稿日の降順
-    queryset = queryset.order_by("-date_publish")
+    # デフォルトの並び順は投稿日の降順→created_atの降順
     if "sort" in querydict:
         sort_value = querydict["sort"]
         if sort_value == "date_publish_desc":
