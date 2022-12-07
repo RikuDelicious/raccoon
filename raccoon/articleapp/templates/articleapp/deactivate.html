@@ -6,7 +6,7 @@
 
 <div class="max-w-[640px] mx-auto">
     <h1 class="text-4xl font-bold text-[#E6E6E6] mb-10">退会</h1>
-    <p class="text-[#E6E6E6] mb-4">退会すると、ユーザー情報・投稿が全て削除されます。<br>この処理は取り消しできません。</p>
+    <p class="text-[#E6E6E6] mb-4">退会すると、アカウント情報・投稿が全て削除されます。<br>この処理は取り消しできません。</p>
 
     <form action="{% url 'deactivate' %}" method="post" class="form_general">
         {% csrf_token %}
