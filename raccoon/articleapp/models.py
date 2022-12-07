@@ -52,6 +52,10 @@ class User(AbstractUser):
         self.set_password(generate_random_password())  # パスワードをランダムに上書きして復元不可にする
         self.save()
 
+    class Meta(AbstractUser.Meta):
+        verbose_name = "ユーザー"
+        verbose_name_plural = "ユーザー"
+
 
 class Post(models.Model):
     title = models.CharField(max_length=200, verbose_name="タイトル")
@@ -69,6 +73,8 @@ class Post(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["user", "slug"], name="unique_user_slug"),
         ]
+        verbose_name = "投稿"
+        verbose_name_plural = "投稿"
 
     def __str__(self):
         return self.title
@@ -92,3 +98,7 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = "タグ"
+        verbose_name_plural = "タグ"
