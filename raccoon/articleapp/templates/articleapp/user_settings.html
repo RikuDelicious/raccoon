@@ -3,24 +3,26 @@
 {% block title %}設定{% endblock title %}
 
 {% block main %}
-<h1 class="text-4xl font-bold text-[#E6E6E6] mb-10">設定</h1>
-<ul class="flex text-lg mb-6">
-    {% for item in menu_items %}
-        {% if item.name == current_menu_item %}
-            <li class="p-2 border-x border-t border-[#D2D2D2] text-[#E6E6E6]">{{ item.label }}</li>
-        {% else %}
-            <li class="p-2 border-b border-[#D2D2D2]">
-                <a href="{% url item.url_name %}" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline">
-                    {{ item.label }}
-                </a>
-            </li>
-        {% endif %}
-    {% endfor %}
-    <li class="grow border-b border-[#D2D2D2]"></li>
-</ul>
-{% if current_menu_item == "profile" %}
-    {% include "articleapp/snippets/settings_profile.html" with form=form %}
-{% elif current_menu_item == "account" %}
-    {% include "articleapp/snippets/settings_account.html" with form=form %}
-{% endif %}
+<div class="max-w-[1120px] mx-auto">
+    <h1 class="text-4xl font-bold text-[#E6E6E6] mb-10">設定</h1>
+    <ul class="flex text-lg mb-6">
+        {% for item in menu_items %}
+            {% if item.name == current_menu_item %}
+                <li class="p-2 border-x border-t border-[#D2D2D2] text-[#E6E6E6]">{{ item.label }}</li>
+            {% else %}
+                <li class="p-2 border-b border-[#D2D2D2]">
+                    <a href="{% url item.url_name %}" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline">
+                        {{ item.label }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        <li class="grow border-b border-[#D2D2D2]"></li>
+    </ul>
+    {% if current_menu_item == "profile" %}
+        {% include "articleapp/snippets/settings_profile.html" with form=form %}
+    {% elif current_menu_item == "account" %}
+        {% include "articleapp/snippets/settings_account.html" with form=form %}
+    {% endif %}
+</div>
 {% endblock main %}

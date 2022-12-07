@@ -1,41 +1,43 @@
 {% extends 'articleapp/base.html' %}
 {% block main %}
-<div class="text-center mb-10">
-    <h1 class="text-4xl font-bold text-[#E6E6E6] mb-2">記事投稿サイト</h1>
-    <p class="text-[#5D5C5C]">誰でも記事を作成して投稿できるサイトです。</p>
+<div class="max-w-[1120px] mx-auto">
+    <div class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-[#E6E6E6] mb-2">記事投稿サイト</h1>
+        <p class="text-[#5D5C5C]">誰でも記事を作成して投稿できるサイトです。</p>
+        <div>
+            {% if request.user.is_authenticated %}
+            {% else %}
+                <a href="{% url 'login' %}" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA]">
+                    ログイン
+                </a>
+                <span class="text-[#5D5C5C]"> / </span>
+                <a href="{% url 'signup' %}" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA]">
+                    新規登録
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="max-w-[800px] mx-auto min-h-[100px] mb-10 p-2 bg-[#091F2C] text-center">
+        <h2 class="text-3xl font-bold text-[#E6E6E6]">Random Tags</h2>
+        <div class="max-w-[400px] mx-auto">
+            {% for tag in tags %}
+            <a href="{% url 'search' %}?tags={{ tag.name|urlencode }}&title={{ tag.name|urlencode }}"
+                class="text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA] mr-2 whitespace-nowrap">
+                # {{ tag.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
     <div>
-        {% if request.user.is_authenticated %}
-        {% else %}
-            <a href="{% url 'login' %}" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA]">
-                ログイン
+        <h2 class="text-3xl font-bold text-[#E6E6E6] mb-6">新着記事</h2>
+        <div class="mb-4">
+            {% include "articleapp/snippets/post_list.html" with posts=posts %}
+        </div>
+        <div class="text-center">
+            <a href="{% url 'search' %}?title={{ 'All Posts'|urlencode  }}" class="text-xl font-bold text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA]">
+                All Posts
             </a>
-            <span class="text-[#5D5C5C]"> / </span>
-            <a href="{% url 'signup' %}" class="text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA]">
-                新規登録
-            </a>
-        {% endif %}
-    </div>
-</div>
-<div class="max-w-[800px] mx-auto min-h-[100px] mb-10 p-2 bg-[#091F2C] text-center">
-    <h2 class="text-3xl font-bold text-[#E6E6E6]">Random Tags</h2>
-    <div class="max-w-[400px] mx-auto">
-        {% for tag in tags %}
-        <a href="{% url 'search' %}?tags={{ tag.name|urlencode }}&title={{ tag.name|urlencode }}"
-            class="text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA] mr-2 whitespace-nowrap">
-            # {{ tag.name }}
-        </a>
-        {% endfor %}
-    </div>
-</div>
-<div>
-    <h2 class="text-3xl font-bold text-[#E6E6E6] mb-6">新着記事</h2>
-    <div class="mb-4">
-        {% include "articleapp/snippets/post_list.html" with posts=posts %}
-    </div>
-    <div class="text-center">
-        <a href="{% url 'search' %}?title={{ 'All Posts'|urlencode  }}" class="text-xl font-bold text-[#75B6E7] hover:text-[#278CDA] hover:underline decoration-[#278CDA]">
-            All Posts
-        </a>
+        </div>
     </div>
 </div>
 {% endblock main %}
