@@ -100,7 +100,7 @@ def search(request):
         if sort_value == "date_publish_desc":
             pass  # 何もしない
         if sort_value == "date_publish_asc":
-            queryset = queryset.order_by("date_publish")
+            queryset = queryset.order_by("date_publish", "created_at")
 
     # 公開中の投稿のみを表示する
     queryset = queryset.filter(is_published__exact=True)
@@ -179,8 +179,7 @@ def post_detail(request, username, slug):
     post = get_object_or_404(Post, user=user, slug=slug, is_published=True)
     other_posts = (
         Post.objects.filter(user=user, is_published=True)
-        .exclude(id=post.id)
-        .order_by("-date_publish")[0:5]
+        .exclude(id=post.id)[0:5]
     )
     context = {"post": post, "post_user": user, "other_posts": other_posts}
     return render(request, "articleapp/post_detail.html", context)
