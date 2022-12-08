@@ -10,8 +10,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
-from .forms import (AccountUpdateForm, PostForm, ProfileUpdateForm,
-                    UserCreationForm)
+from .forms import AccountUpdateForm, PostForm, ProfileUpdateForm, UserCreationForm
 from .models import Post, Tag, User
 from .utils.pagination import create_navigation_context_from_page
 
@@ -64,6 +63,7 @@ def search(request):
     # フィルタ: 期間_開始
     if "period_start_date" in querydict:
         try:
+            # 日本のサイトなのでJSTの日付として扱う（TIME_ZONE = "Asia/Tokyo"）
             start_date = timezone.make_aware(
                 datetime.datetime.strptime(querydict["period_start_date"], "%Y-%m-%d")
             )
@@ -75,6 +75,7 @@ def search(request):
     # フィルタ:期間_終了
     if "period_end_date" in querydict:
         try:
+            # 日本のサイトなのでJSTの日付として扱う（TIME_ZONE = "Asia/Tokyo"）
             end_date = timezone.make_aware(
                 datetime.datetime.strptime(querydict["period_end_date"], "%Y-%m-%d")
             )

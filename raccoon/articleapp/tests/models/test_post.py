@@ -2,11 +2,12 @@ import datetime
 
 from articleapp.models import Post, User
 from django.test import Client, TestCase
+from django.utils import timezone
 
 
 class PostTests(TestCase):
     def setUp(self):
-        self.today_datetime = datetime.datetime.now()
+        self.today_datetime = timezone.now()
 
     def test_publishメソッド_下書き状態の投稿を公開(self):
         user = User.objects.create_user(username="testuser", password="testuser")
