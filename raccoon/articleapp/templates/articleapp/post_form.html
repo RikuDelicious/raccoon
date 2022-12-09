@@ -9,7 +9,7 @@
 {% endblock styles %}
 
 {% block main %}
-<form action="{% url 'post_create' %}" method="post" class="form_general" id="post_form">
+<form action="{{ form_action_url }}" method="post" class="form_general" id="post_form">
     {% csrf_token %}
     {{ form.non_field_errors }}
     {% include 'articleapp/snippets/field.html' with field=form.title %}
