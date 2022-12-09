@@ -6,9 +6,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models import Count, Q
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.urls import reverse
 
 from .forms import AccountUpdateForm, PostForm, ProfileUpdateForm, UserCreationForm
 from .models import Post, Tag, User
@@ -177,10 +178,9 @@ def post_detail(request, username, slug):
         User, username=username, is_staff=False, is_superuser=False
     )
     post = get_object_or_404(Post, user=user, slug=slug, is_published=True)
-    other_posts = (
-        Post.objects.filter(user=user, is_published=True)
-        .exclude(id=post.id)[0:5]
-    )
+    other_posts = Post.objects.filter(user=user, is_published=True).exclude(id=post.id)[
+        0:5
+    ]
     context = {"post": post, "post_user": user, "other_posts": other_posts}
     return render(request, "articleapp/post_detail.html", context)
 
@@ -337,3 +337,71 @@ def post_create(request):
     form = PostForm()
     context["form"] = form
     return render(request, "articleapp/post_create.html", context)
+
+
+@login_required
+def post_update(request, username, slug):
+    context = {}
+
+    # 投稿のユーザーとログインユーザーが違う場合は404例外を送出する
+    if request.user.username != username:
+        raise Http404()
+
+    # ログインユーザーの投稿を取得
+    post = get_object_or_404(Post, user=request.user, slug=slug)
+
+    # フォームのaction属性のurlを生成
+    context["form_action_url"] = reverse(
+        "post_update", kwargs={"username": post.user.username, "slug": post.slug}
+    )
+
+    if request.method == "POST":
+        querydict = request.POST.copy()
+
+        # userフィールドの値を加える
+        querydict["user"] = post.user
+
+        # tagsフィールドにタグのリストをセットする
+        tags_text = querydict["tags_text"].split()
+        # 最大文字数を越えるタグが含まれていたらタグの取得・生成を行わずにエラーとする
+        tag_name_max_length = Tag._meta.get_field("name").max_length
+        has_invalid_length_tag = False  # 最大数を越えるタグが含まれているかをフラグで保持する
+        if any([len(tag_text) > tag_name_max_length for tag_text in tags_text]):
+            has_invalid_length_tag = True
+        else:
+            tags = [
+                Tag.objects.get_or_create(name=tag_text)[0].id for tag_text in tags_text
+            ]
+            querydict.setlist("tags", tags)
+
+        # フォームにデータを紐づける
+        form = PostForm(querydict, instance=post)
+        if has_invalid_length_tag:
+            form.add_error(
+                "tags_text", ValidationError("1つのタグの文字数は最大100文字までです。", code="invalid")
+            )
+
+        if form.is_valid():
+            post = form.save()
+            next_url_name = "user_home"
+            if form.cleaned_data["save_option"] == "save_and_publish":
+                post.publish()
+                next_url_name = "user_home"
+            elif form.cleaned_data["save_option"] == "save_as_draft":
+                post.unpublish()
+                next_url_name = "user_home_drafts"
+            return redirect(next_url_name, username=request.user.username)
+        else:
+            context["form"] = form
+            print(form.errors.as_data())
+            return render(request, "articleapp/post_form.html", context, status=400)
+
+    form = PostForm(
+        instance=post,
+        initial={
+            "save_option": "save_and_publish" if post.is_published else "save_as_draft"
+        },
+    )
+    context["form"] = form
+
+    return render(request, "articleapp/post_form.html", context)

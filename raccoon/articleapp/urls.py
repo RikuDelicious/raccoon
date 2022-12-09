@@ -57,6 +57,11 @@ urlpatterns = [
         kwargs={"drafts": True},
     ),
     path("<str:username>/posts/<slug:slug>/", views.post_detail, name="post_detail"),
+    path(
+        "<str:username>/posts/<slug:slug>/update/",
+        views.post_update,
+        name="post_update",
+    ),
 ]
 
 if settings.DEBUG:
