@@ -296,6 +296,9 @@ def deactivate(request):
 def post_create(request):
     context = {}
 
+    # フォームのaction属性のurlを生成
+    context["form_action_url"] = reverse("post_create")
+
     if request.method == "POST":
         querydict = request.POST.copy()
         # QueryDictにuserフィールドの値を加える
@@ -328,15 +331,16 @@ def post_create(request):
                 post.publish()
                 next_url_name = "user_home"
             elif form.cleaned_data["save_option"] == "save_as_draft":
+                post.unpublish()
                 next_url_name = "user_home_drafts"
             return redirect(next_url_name, username=request.user.username)
         else:
             context["form"] = form
-            return render(request, "articleapp/post_create.html", context, status=400)
+            return render(request, "articleapp/post_form.html", context, status=400)
 
     form = PostForm()
     context["form"] = form
-    return render(request, "articleapp/post_create.html", context)
+    return render(request, "articleapp/post_form.html", context)
 
 
 @login_required
