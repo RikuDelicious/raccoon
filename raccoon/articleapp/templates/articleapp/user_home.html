@@ -25,7 +25,7 @@
     <div class="flex mb-6 gap-2">
         <h2 class="text-3xl font-bold text-[#E6E6E6]">投稿</h2>
         {% if is_logged_in_user_home %}
-        <a href="" class="bg-[#75B6E7] text-[#000000] hover:bg-[#278CDA] hover:underline font-bold rounded-md py-2 px-4">
+        <a href="{% url 'post_create' %}" class="bg-[#75B6E7] text-[#000000] hover:bg-[#278CDA] hover:underline font-bold rounded-md py-2 px-4">
             + 新規投稿
         </a>
         {% endif %}
