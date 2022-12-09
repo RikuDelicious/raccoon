@@ -89,6 +89,14 @@ class Post(models.Model):
         self.date_publish = timezone.now().date()
         self.save()
 
+    def unpublish(self):
+        """
+        投稿のステータスを非公開に切り替えて投稿日を削除する
+        """
+        self.is_published = False
+        self.date_publish = None
+        self.save()
+
     def get_absolute_url(self):
         return reverse("post_detail", kwargs={"username": self.user, "slug": self.slug})
 
