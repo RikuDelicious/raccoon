@@ -205,6 +205,21 @@ class PostCreateViewTests(TestCase):
 
         # 入力パターン
         seed = string.ascii_lowercase
+        # フィールドの最大文字数のテキスト
+        field_max_length_text = [
+            "あ" if i % 2 == 0 else " "
+            for i in range(PostForm().fields["tags_text"].max_length)
+        ]
+        if field_max_length_text[-1] == " ":
+            field_max_length_text[-1] = "あ"
+        # フィールドの最大文字数 + 1のテキスト
+        field_over_max_length_text = [
+            "あ" if i % 2 == 0 else " "
+            for i in range(PostForm().fields["tags_text"].max_length + 1)
+        ]
+        if field_over_max_length_text[-1] == " ":
+            field_over_max_length_text[-1] = "あ"
+        
         tags_text_list = [
             "",  # 空
             "a",  # 1文字
@@ -217,14 +232,8 @@ class PostCreateViewTests(TestCase):
             "".join(
                 random.choices(seed, k=(Tag._meta.get_field("name").max_length + 1))
             ),  # タグの最大文字数 + 1
-            " ".join(
-                random.choices(seed, k=(PostForm().fields["tags_text"].max_length // 2))
-            ),  # フォームの最大文字数
-            " ".join(
-                random.choices(
-                    seed, k=(PostForm().fields["tags_text"].max_length // 2 + 1)
-                )
-            ),  # フォームの最大文字数 + 1
+            "".join(field_max_length_text),  # フォームの最大文字数
+            "".join(field_over_max_length_text),  # フォームの最大文字数 + 1
         ]
 
         for i, tags_text in enumerate(tags_text_list):
@@ -303,7 +312,7 @@ class PostCreateViewTests(TestCase):
                     redirect_url.path,
                     reverse("user_home", kwargs={"username": "testuser_0"}),
                 )
-    
+
     def test_フォーム_bodyフィールド(self):
         c = Client()
         c.login(username="testuser_0", password="testuser_0")
