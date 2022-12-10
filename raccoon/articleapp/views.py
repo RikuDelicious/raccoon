@@ -397,13 +397,13 @@ def post_update(request, username, slug):
             return redirect(next_url_name, username=request.user.username)
         else:
             context["form"] = form
-            print(form.errors.as_data())
             return render(request, "articleapp/post_form.html", context, status=400)
 
     form = PostForm(
         instance=post,
         initial={
-            "save_option": "save_and_publish" if post.is_published else "save_as_draft"
+            "tags_text": " ".join([tag.name for tag in post.tags.all()]),
+            "save_option": "save_and_publish" if post.is_published else "save_as_draft",
         },
     )
     context["form"] = form
