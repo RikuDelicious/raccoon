@@ -219,7 +219,7 @@ class PostCreateViewTests(TestCase):
         ]
         if field_over_max_length_text[-1] == " ":
             field_over_max_length_text[-1] = "あ"
-        
+
         tags_text_list = [
             "",  # 空
             "a",  # 1文字
@@ -234,6 +234,7 @@ class PostCreateViewTests(TestCase):
             ),  # タグの最大文字数 + 1
             "".join(field_max_length_text),  # フォームの最大文字数
             "".join(field_over_max_length_text),  # フォームの最大文字数 + 1
+            "JavaScript JavaScript JavaScript",  # 同じタグ名を重複して入力
         ]
 
         for i, tags_text in enumerate(tags_text_list):
@@ -260,12 +261,20 @@ class PostCreateViewTests(TestCase):
                     reverse("user_home", kwargs={"username": "testuser_0"}),
                 )
 
+                # 投稿にタグが紐づけられていることの確認
+                post = Post.objects.get(user=self.users[0], slug=post_data["slug"])
+                self.assertListEqual(
+                    [tag.name for tag in post.tags.order_by("name").all()],
+                    sorted(set(tags_text.split())),
+                )
+
         # タグが生成されていることの確認
         self.assertEqual(Tag.objects.filter(name="C#").count(), 1)
         self.assertEqual(Tag.objects.filter(name=".Net").count(), 1)
         self.assertEqual(Tag.objects.filter(name="WPF").count(), 1)
         self.assertEqual(Tag.objects.filter(name=tags_text_list[5]).count(), 1)
         self.assertEqual(Tag.objects.filter(name=tags_text_list[6]).count(), 0)
+        self.assertEqual(Tag.objects.filter(name="JavaScript").count(), 1)
 
     def test_フォーム_slugフィールド(self):
         c = Client()
