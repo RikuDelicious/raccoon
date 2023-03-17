@@ -126,3 +126,25 @@ $ /path/to/repository> . ./venv/bin/activate
 ```
 (venv)$ /path/to/repository/raccoon> python ./manage.py createsuperuser
 ```
+
+### 3.開発サーバーを立ち上げる
+準備が整ったので、開発サーバーを立ち上げます。  
+以下のコマンドを実行します。
+```
+(venv)$ /path/to/repository/raccoon> python ./manage.py runserver
+```
+
+成功すると以下のような表示が出ます。
+```
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+March xx, 2023 - xx:xx:xx
+Django version 4.1.3, using settings 'raccoon.settings.development'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+```
+
+この状態で、「Starting development server at...」の後に記載されているURLにアクセスすることで、  
+開発中のサイトにアクセスすることが出来ます。
