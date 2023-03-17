@@ -413,3 +413,6 @@ dist
 
 # raccoon
 raccoon/uploads/
+
+# tailwindcssのcssファイルを除外
+!raccoon/theme/static/css/dist/
