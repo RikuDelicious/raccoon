@@ -97,7 +97,7 @@ https://qiita.com/rikudelicious/items/f7bf61dcaa6149ad9931
 ### 1.pythonの仮想環境を立ち上げ、必要なパッケージをインストールする
 本アプリケーションはpython3.11で動作することを確認しています。
 
-pythonの仮想環境を立ち上げて有効化する  
+**pythonの仮想環境を立ち上げて有効化する**  
 Windows(Pyランチャー)の場合
 ```
 $ /path/to/repository> py -3.11 -m venv venv
@@ -109,7 +109,7 @@ $ /path/to/repository> python -m venv venv
 $ /path/to/repository> . ./venv/bin/activate
 ```
 
-必要なpythonパッケージをインストールする  
+**必要なpythonパッケージをインストールする**  
 ```
 (venv)$ /path/to/repository> cd ./raccoon
 (venv)$ /path/to/repository/raccoon> pip install -r ./requirements.txt
