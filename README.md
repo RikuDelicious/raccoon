@@ -100,7 +100,7 @@ https://qiita.com/rikudelicious/items/f7bf61dcaa6149ad9931
 pythonの仮想環境を立ち上げて有効化する  
 Windows(Pyランチャー)の場合
 ```
-$ /path/to/repository> py -m 3.11 venv venv
+$ /path/to/repository> py -3.11 -m venv venv
 $ /path/to/repository> .\venv\Scripts\Activate.ps1
 ```
 Linuxの場合
