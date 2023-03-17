@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "articleapp.apps.ArticleappConfig",
     "tailwind",
     "theme",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
