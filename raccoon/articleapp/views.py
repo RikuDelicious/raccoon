@@ -14,6 +14,7 @@ from django.urls import reverse
 from .forms import AccountUpdateForm, PostForm, ProfileUpdateForm, UserCreationForm
 from .models import Post, Tag, User
 from .utils.pagination import create_navigation_context_from_page
+from django.http import Http404
 
 
 # Create your views here.
@@ -177,7 +178,10 @@ def post_detail(request, username, slug):
     user = get_object_or_404(
         User, username=username, is_staff=False, is_superuser=False
     )
-    post = get_object_or_404(Post, user=user, slug=slug, is_published=True)
+    post = get_object_or_404(Post, user=user, slug=slug)
+    if post.is_published is False and request.user != user:
+        raise Http404()
+
     other_posts = Post.objects.filter(user=user, is_published=True).exclude(id=post.id)[
         0:5
     ]
