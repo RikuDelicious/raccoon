@@ -1,7 +1,7 @@
 # アプリケーションの概要
 誰でもユーザー登録して記事を投稿できるという簡易Webサービスとなります。  
 Python + Djangoを使って開発しております。  
-現在のデプロイ先URL：https://raccoon-service.watermelonman.net/
+現在のデプロイ先URL：無し
 ![top](https://user-images.githubusercontent.com/101910815/225845482-765cc981-b580-4521-9e54-68c1304ea18c.png)
 
 
